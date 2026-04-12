@@ -1,0 +1,11 @@
+Place your BGM files here:
+- bgm_name_01.mp3
+- bgm_name_02.mp3
+- bgm_lobby_01.mp3
+- bgm_lobby_02.mp3
+- bgm_assassin_01.mp3
+- bgm_assassin_02.mp3
+- bgm_knight_01.mp3
+- bgm_knight_02.mp3
+- bgm_mage_01.mp3
+- bgm_mage_02.mp3

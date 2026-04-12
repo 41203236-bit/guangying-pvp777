@@ -234,32 +234,61 @@
     updateTimerDisplay();
   }
 
-  function playUltCinematic(event) {
-    if (!event?.id || !event?.role) return;
-    if (state.handledUltVideoIds.has(event.id) || state.currentUltVideoEventId === event.id) return;
-    state.handledUltVideoIds.add(event.id);
-    state.currentUltVideoEventId = event.id;
-    state.isUltCinematicPlaying = true;
-    state.frozenTimerText = els.timerValue ? els.timerValue.textContent : '';
-    setCinematicPageState(true);
-    pauseBattleBgm();
-    if (els.ultVideoCaption) els.ultVideoCaption.textContent = `${getRoleDisplayName(event.role)}大招演出中`;
-    const player = els.ultVideoPlayer;
-    if (!player || !els.ultVideoOverlay) {
-      finishUltCinematic();
-      return;
-    }
-    clearCinematicFailSafe();
-    player.onended = finishUltCinematic;
-    player.onerror = finishUltCinematic;
-    player.src = getUltVideoPath(event.role);
-    try { player.currentTime = 0; } catch (error) {}
-    els.ultVideoOverlay.classList.add('is-visible');
-    els.ultVideoOverlay.setAttribute('aria-hidden', 'false');
-    const playPromise = player.play();
-    setCinematicFailSafe(finishUltCinematic, 8000);
-    if (playPromise && playPromise.catch) playPromise.catch(() => finishUltCinematic());
+ function playUltCinematic(event) {
+  console.log('[ULT DEBUG] playUltCinematic enter', event);
+
+  if (!event?.id || !event?.role) {
+    console.log('[ULT DEBUG] blocked: missing event id or role');
+    return;
   }
+
+  if (state.handledUltVideoIds.has(event.id) || state.currentUltVideoEventId === event.id) {
+    console.log('[ULT DEBUG] blocked: already handled', {
+      handled: state.handledUltVideoIds.has(event.id),
+      current: state.currentUltVideoEventId
+    });
+    return;
+  }
+
+  state.handledUltVideoIds.add(event.id);
+  state.currentUltVideoEventId = event.id;
+  state.isUltCinematicPlaying = true;
+  state.frozenTimerText = els.timerValue ? els.timerValue.textContent : '';
+  setCinematicPageState(true);
+  pauseBattleBgm();
+
+  if (els.ultVideoCaption) els.ultVideoCaption.textContent = `${getRoleDisplayName(event.role)}大招演出中`;
+
+  const player = els.ultVideoPlayer;
+  if (!player || !els.ultVideoOverlay) {
+    console.log('[ULT DEBUG] blocked: missing video elements', {
+      playerExists: !!player,
+      overlayExists: !!els.ultVideoOverlay
+    });
+    finishUltCinematic();
+    return;
+  }
+
+  clearCinematicFailSafe();
+  player.onended = finishUltCinematic;
+  player.onerror = finishUltCinematic;
+  player.src = getUltVideoPath(event.role);
+
+  try { player.currentTime = 0; } catch (error) {}
+
+  els.ultVideoOverlay.classList.add('is-visible');
+  els.ultVideoOverlay.setAttribute('aria-hidden', 'false');
+
+  const playPromise = player.play();
+  setCinematicFailSafe(finishUltCinematic, 8000);
+
+  if (playPromise && playPromise.catch) {
+    playPromise.catch((error) => {
+      console.log('[ULT DEBUG] play() failed', error);
+      finishUltCinematic();
+    });
+  }
+}
 
   function finishWinCinematic() {
     if (!state.isWinCinematicPlaying) return;
@@ -312,7 +341,15 @@
   const now = Date.now();
   const ultEvent = battle?.cinematics?.ultEvent;
 
+  console.log('[ULT DEBUG] maybeHandleCinematics', {
+    phase: battle?.phase,
+    ultEvent,
+    now,
+    delta: ultEvent?.createdAt ? Math.abs(now - normalizeNumber(ultEvent.createdAt, now)) : null
+  });
+
   if (ultEvent?.id && Math.abs(now - normalizeNumber(ultEvent.createdAt, now)) <= 15000) {
+    console.log('[ULT DEBUG] calling playUltCinematic', ultEvent);
     playUltCinematic(ultEvent);
   }
 

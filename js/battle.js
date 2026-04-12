@@ -308,17 +308,21 @@
   }
 
   function maybeHandleCinematics(battle) {
-    if (!battle) return;
-    const now = Date.now();
-    const ultEvent = battle?.cinematics?.ultEvent;
-    if (ultEvent?.id && battle.phase === 'IN_GAME' && Math.abs(now - normalizeNumber(ultEvent.createdAt, now)) <= 10000) {
-      playUltCinematic(ultEvent);
-    }
-    if (battle.phase === 'GAME_OVER' || battle.phase === 'RESULT_CHOICE') {
-      const resultEvent = getResultVideoEvent(battle);
-      if (resultEvent?.id && state.lastResultVideoEventId !== resultEvent.id) playWinCinematic(resultEvent);
+  if (!battle) return;
+  const now = Date.now();
+  const ultEvent = battle?.cinematics?.ultEvent;
+
+  if (ultEvent?.id && Math.abs(now - normalizeNumber(ultEvent.createdAt, now)) <= 15000) {
+    playUltCinematic(ultEvent);
+  }
+
+  if (battle.phase === 'GAME_OVER' || battle.phase === 'RESULT_CHOICE') {
+    const resultEvent = getResultVideoEvent(battle);
+    if (resultEvent?.id && state.lastResultVideoEventId !== resultEvent.id) {
+      playWinCinematic(resultEvent);
     }
   }
+}
 
   function campLabel(camp) {
     return camp === 'dark' ? '暗' : '光';

@@ -731,6 +731,147 @@ body::before {
 }
 .ultimate-button .skill-name { color: #ff9eb3; }
 
+.ultimate-button {
+  isolation: isolate;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;
+}
+.ultimate-button::before,
+.ultimate-button::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .22s ease, transform .22s ease;
+}
+.ultimate-button::before {
+  inset: 8px;
+  z-index: 0;
+  filter: blur(14px);
+}
+.ultimate-button::after {
+  z-index: 0;
+  mix-blend-mode: screen;
+}
+.ultimate-button .skill-name {
+  position: relative;
+  z-index: 2;
+  letter-spacing: .06em;
+  transition: color .22s ease, text-shadow .22s ease, transform .22s ease;
+}
+.ultimate-button.is-ult-ready {
+  border-color: rgba(255,255,255,.42);
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 16px 32px rgba(0,0,0,.24);
+  animation: ultReadyPulse 2.4s ease-in-out infinite;
+}
+.ultimate-button.is-ult-ready::before,
+.ultimate-button.is-ult-ready::after {
+  opacity: 1;
+}
+.ultimate-button.is-ult-ready .skill-name {
+  color: #fffdf5;
+  text-shadow: 0 0 12px rgba(255,255,255,.2);
+}
+.ultimate-button.is-ult-ready.is-armed {
+  transform: translateY(-3px) scale(1.015);
+}
+.ultimate-button.ult-ready-assassin {
+  background:
+    linear-gradient(135deg, rgba(18, 9, 36, .96), rgba(44, 16, 75, .88) 48%, rgba(12, 8, 28, .96));
+  border-color: rgba(161, 107, 255, .55);
+  box-shadow: 0 0 0 1px rgba(149, 88, 255, .16), 0 14px 34px rgba(48, 12, 86, .42), 0 0 22px rgba(134, 78, 255, .24);
+}
+.ultimate-button.ult-ready-assassin::before {
+  background: radial-gradient(circle at 50% 50%, rgba(163, 103, 255, .58), rgba(117, 56, 255, .18) 50%, rgba(0,0,0,0) 74%);
+  animation: assassinAuraPulse 1.7s ease-in-out infinite;
+}
+.ultimate-button.ult-ready-assassin::after {
+  inset: 0;
+  background:
+    linear-gradient(118deg, transparent 12%, rgba(201, 172, 255, .04) 28%, rgba(183, 130, 255, .34) 38%, transparent 50%),
+    linear-gradient(65deg, transparent 52%, rgba(222, 193, 255, .28) 57%, transparent 63%),
+    linear-gradient(128deg, transparent 60%, rgba(126, 79, 255, .32) 64%, transparent 70%);
+  animation: assassinEdgeStorm 1.35s linear infinite;
+}
+.ultimate-button.ult-ready-assassin .skill-name {
+  text-shadow: 0 0 10px rgba(191, 152, 255, .4), 0 0 20px rgba(101, 58, 218, .34);
+}
+.ultimate-button.ult-ready-mage {
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255, 239, 180, .18), transparent 36%),
+    linear-gradient(135deg, rgba(18, 42, 88, .95), rgba(31, 82, 164, .88) 44%, rgba(129, 102, 35, .72) 82%, rgba(25, 29, 74, .92));
+  border-color: rgba(139, 198, 255, .6);
+  box-shadow: 0 0 0 1px rgba(127, 194, 255, .18), 0 16px 34px rgba(24, 61, 128, .36), 0 0 24px rgba(255, 220, 120, .18);
+}
+.ultimate-button.ult-ready-mage::before {
+  background: radial-gradient(circle at 50% 54%, rgba(116, 190, 255, .5), rgba(255, 214, 122, .2) 46%, rgba(0,0,0,0) 72%);
+  animation: mageHaloBreath 2.1s ease-in-out infinite;
+}
+.ultimate-button.ult-ready-mage::after {
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(132, 197, 255, .22), transparent 44%),
+    radial-gradient(ellipse at 80% 50%, rgba(255, 218, 124, .22), transparent 44%),
+    linear-gradient(90deg, transparent 15%, rgba(255,255,255,.14) 34%, transparent 54%, rgba(255, 222, 151, .18) 70%, transparent 86%);
+  animation: mageWingFlow 2.4s ease-in-out infinite;
+}
+.ultimate-button.ult-ready-mage .skill-name {
+  text-shadow: 0 0 10px rgba(147, 204, 255, .38), 0 0 18px rgba(255, 225, 146, .3);
+}
+.ultimate-button.ult-ready-knight {
+  background:
+    linear-gradient(135deg, rgba(77, 46, 8, .96), rgba(133, 91, 18, .9) 36%, rgba(248, 198, 78, .24) 52%, rgba(101, 62, 14, .95) 76%, rgba(40, 24, 6, .98));
+  border-color: rgba(255, 205, 90, .62);
+  box-shadow: 0 0 0 1px rgba(255, 209, 108, .18), 0 16px 34px rgba(112, 71, 12, .4), 0 0 24px rgba(255, 203, 87, .2);
+}
+.ultimate-button.ult-ready-knight::before {
+  background: radial-gradient(circle at 50% 50%, rgba(255, 213, 111, .48), rgba(255, 178, 50, .18) 48%, rgba(0,0,0,0) 72%);
+  animation: knightChargePulse 1.85s ease-in-out infinite;
+}
+.ultimate-button.ult-ready-knight::after {
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 14%, rgba(255, 248, 216, .08) 30%, rgba(255, 225, 143, .34) 39%, transparent 49%),
+    linear-gradient(135deg, transparent 46%, rgba(255, 245, 208, .2) 54%, transparent 63%);
+  animation: knightSweep 2s ease-in-out infinite;
+}
+.ultimate-button.ult-ready-knight .skill-name {
+  text-shadow: 0 0 10px rgba(255, 231, 162, .36), 0 0 18px rgba(255, 188, 64, .28);
+}
+
+@keyframes ultReadyPulse {
+  0%, 100% { transform: translateY(-2px) scale(1); }
+  50% { transform: translateY(-2px) scale(1.018); }
+}
+@keyframes assassinAuraPulse {
+  0%, 100% { transform: scale(.98); opacity: .58; }
+  50% { transform: scale(1.05); opacity: .92; }
+}
+@keyframes assassinEdgeStorm {
+  0% { transform: translateX(-16%) skewX(-14deg); opacity: .52; }
+  50% { opacity: .95; }
+  100% { transform: translateX(18%) skewX(-14deg); opacity: .58; }
+}
+@keyframes mageHaloBreath {
+  0%, 100% { transform: scale(.985); opacity: .62; }
+  50% { transform: scale(1.04); opacity: .95; }
+}
+@keyframes mageWingFlow {
+  0%, 100% { transform: translateX(-2%) scale(1); opacity: .6; }
+  50% { transform: translateX(2%) scale(1.03); opacity: .96; }
+}
+@keyframes knightChargePulse {
+  0%, 100% { transform: scale(.99); opacity: .6; }
+  50% { transform: scale(1.045); opacity: .94; }
+}
+@keyframes knightSweep {
+  0% { transform: translateX(-12%) skewX(-12deg); opacity: .58; }
+  45% { opacity: .96; }
+  100% { transform: translateX(12%) skewX(-12deg); opacity: .64; }
+}
+
 .end-turn-button {
   min-width: 260px;
   min-height: 62px;

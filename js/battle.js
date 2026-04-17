@@ -1341,6 +1341,21 @@
     if (refs.ultValue) refs.ultValue.textContent = `ULT ${normalizeNumber(safePlayer.ult, 0)} / 100`;
   }
 
+  function clearUltReadyFx(button) {
+    if (!button) return;
+    button.classList.remove('is-ult-ready', 'ult-ready-assassin', 'ult-ready-mage', 'ult-ready-knight');
+  }
+
+  function applyUltReadyFx(button, role, ready) {
+    if (!button) return;
+    clearUltReadyFx(button);
+    if (!ready) return;
+    button.classList.add('is-ult-ready');
+    if (role === 'assassin') button.classList.add('ult-ready-assassin');
+    else if (role === 'mage') button.classList.add('ult-ready-mage');
+    else button.classList.add('ult-ready-knight');
+  }
+
   function updateActionStates(battle) {
     const currentBattle = battle || getMyBattle();
     if (isInteractionLocked()) {
@@ -1351,6 +1366,7 @@
       els.skillButtons.forEach((button) => {
         button.disabled = true;
         button.classList.remove('is-clickable', 'is-armed');
+        if (button.dataset.skill === 'ult') clearUltReadyFx(button);
       });
       return;
     }
@@ -1378,6 +1394,7 @@
     els.skillButtons.forEach((button) => {
       const skill = button.dataset.skill || '';
       let disabled = true;
+      let ultReady = false;
       if (skill === 'atk' || skill === 'def' || skill === 'hel') {
         const actualCost = getCommonSkillCost(currentBattle, state.selfMark, skill);
         disabled = locked || state.actionInFlight || !canUseSkillWindow(currentBattle) || normalizeNumber(currentBattle?.turn?.skillUsedCount,0) >= 3 || normalizeNumber(myPlayer.sp,0) < actualCost;
@@ -1388,14 +1405,17 @@
           || ((state.uiMode === 'knight_active_source' || state.uiMode === 'knight_active_target') && state.activeSkill === 'knight_push');
         button.classList.toggle('is-armed', isArmed && !disabled);
       } else if (skill === 'ult') {
+        disabled = myRole === 'mage' ? !canUseMageUlt : myRole === 'assassin' ? !canUseAssassinUlt : myRole === 'knight' ? !canUseKnightUlt : true;
         const isArmedUlt = ((state.uiMode === 'assassin_ult_primary' || state.uiMode === 'assassin_ult_secondary') && state.activeSkill === 'assassin_ult')
           || (state.uiMode === 'knight_ult_target' && state.activeSkill === 'knight_ult');
         button.classList.toggle('is-armed', isArmedUlt && !disabled);
-        disabled = myRole === 'mage' ? !canUseMageUlt : myRole === 'assassin' ? !canUseAssassinUlt : myRole === 'knight' ? !canUseKnightUlt : true;
+        ultReady = !disabled;
+        applyUltReadyFx(button, myRole, ultReady);
       } else {
         button.classList.remove('is-armed');
         disabled = true;
       }
+      if (skill !== 'ult') clearUltReadyFx(button);
       button.disabled = disabled;
       button.classList.toggle('is-clickable', !disabled);
     });

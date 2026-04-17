@@ -1341,18 +1341,6 @@
     if (refs.ultValue) refs.ultValue.textContent = `ULT ${normalizeNumber(safePlayer.ult, 0)} / 100`;
   }
 
-  function updateUltReadyFx(button, role, isReady) {
-    if (!button) return;
-    button.classList.remove('is-ult-ready', 'ult-ready-assassin', 'ult-ready-mage', 'ult-ready-knight');
-    button.removeAttribute('data-ult-role');
-    if (!isReady || !role) return;
-    button.classList.add('is-ult-ready');
-    button.setAttribute('data-ult-role', role);
-    if (role === 'assassin') button.classList.add('ult-ready-assassin');
-    else if (role === 'mage') button.classList.add('ult-ready-mage');
-    else if (role === 'knight') button.classList.add('ult-ready-knight');
-  }
-
   function updateActionStates(battle) {
     const currentBattle = battle || getMyBattle();
     if (isInteractionLocked()) {
@@ -1363,7 +1351,6 @@
       els.skillButtons.forEach((button) => {
         button.disabled = true;
         button.classList.remove('is-clickable', 'is-armed');
-        if ((button.dataset.skill || '') === 'ult') updateUltReadyFx(button, '', false);
       });
       return;
     }
@@ -1401,11 +1388,10 @@
           || ((state.uiMode === 'knight_active_source' || state.uiMode === 'knight_active_target') && state.activeSkill === 'knight_push');
         button.classList.toggle('is-armed', isArmed && !disabled);
       } else if (skill === 'ult') {
-        disabled = myRole === 'mage' ? !canUseMageUlt : myRole === 'assassin' ? !canUseAssassinUlt : myRole === 'knight' ? !canUseKnightUlt : true;
         const isArmedUlt = ((state.uiMode === 'assassin_ult_primary' || state.uiMode === 'assassin_ult_secondary') && state.activeSkill === 'assassin_ult')
           || (state.uiMode === 'knight_ult_target' && state.activeSkill === 'knight_ult');
         button.classList.toggle('is-armed', isArmedUlt && !disabled);
-        updateUltReadyFx(button, myRole, !disabled);
+        disabled = myRole === 'mage' ? !canUseMageUlt : myRole === 'assassin' ? !canUseAssassinUlt : myRole === 'knight' ? !canUseKnightUlt : true;
       } else {
         button.classList.remove('is-armed');
         disabled = true;

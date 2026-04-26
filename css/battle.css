@@ -396,6 +396,7 @@ body::before {
 }
 
 .board-stage {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -411,11 +412,11 @@ body::before {
   top: -58px;
   z-index: 8;
   opacity: 0;
-  transform: translateX(-50%) translateY(-8px) scale(.98);
+  transform: translate(-50%, -8px) scale(.98);
   pointer-events: none;
   padding: 10px 18px;
-  width: min(620px, calc(100% - 24px));
-  max-width: calc(100% - 24px);
+  max-width: min(620px, calc(100% - 24px));
+  width: max-content;
   border-radius: 999px;
   border: 1px solid rgba(243, 202, 105, .42);
   background: linear-gradient(180deg, rgba(31, 21, 5, .92), rgba(66, 40, 7, .88));
@@ -426,12 +427,13 @@ body::before {
   letter-spacing: .5px;
   text-align: center;
   line-height: 1.35;
-  white-space: normal;
-  overflow-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .ult-ready-banner.is-visible {
   opacity: 1;
-  transform: translateX(-50%) translateY(0) scale(1);
+  transform: translate(-50%, 0) scale(1);
   animation: ultReadyPulse 1.05s ease-in-out infinite alternate;
 }
 @keyframes ultReadyPulse {
@@ -440,7 +442,6 @@ body::before {
 }
 
 .board-shell {
-  position: relative;
   width: min(100%, 520px);
   aspect-ratio: 1 / 1;
   padding: 18px;
@@ -729,6 +730,134 @@ body::before {
   font-weight: 900;
 }
 .ultimate-button .skill-name { color: #ff9eb3; }
+
+.ultimate-button {
+  isolation: isolate;
+  transition: transform .2s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease;
+}
+.ultimate-button::before,
+.ultimate-button::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+.ultimate-button .skill-name {
+  position: relative;
+  z-index: 2;
+  transition: color .25s ease, text-shadow .25s ease, transform .25s ease;
+}
+.ultimate-button.ult-ready {
+  border-color: rgba(255, 214, 128, 0.55);
+  transform: translateY(-1px);
+}
+.ultimate-button.ult-ready::before,
+.ultimate-button.ult-ready::after {
+  opacity: 1;
+}
+.ultimate-button.ult-ready .skill-name {
+  text-shadow: 0 0 16px rgba(255, 234, 171, 0.38);
+}
+.ultimate-button.ult-ready-mage {
+  background:
+    radial-gradient(circle at 50% 10%, rgba(255, 232, 162, 0.16), transparent 45%),
+    linear-gradient(180deg, rgba(64, 120, 255, 0.18), rgba(255, 211, 95, 0.08)),
+    rgba(255,255,255,0.03);
+  box-shadow:
+    inset 0 0 0 1px rgba(130, 185, 255, 0.2),
+    0 0 18px rgba(88, 142, 255, 0.26),
+    0 0 32px rgba(255, 209, 102, 0.14);
+}
+.ultimate-button.ult-ready-mage::before {
+  background: linear-gradient(135deg, rgba(94, 169, 255, 0.34), rgba(255, 215, 121, 0.18), rgba(109, 141, 255, 0.28));
+  filter: blur(0.5px);
+  animation: ultMageHalo 2.2s ease-in-out infinite;
+}
+.ultimate-button.ult-ready-mage::after {
+  inset: 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 221, 143, 0.5);
+  box-shadow: 0 0 18px rgba(98, 171, 255, 0.28);
+  animation: ultMagePulse 1.8s ease-in-out infinite;
+}
+.ultimate-button.ult-ready-mage .skill-name {
+  color: #ffe7a2;
+}
+.ultimate-button.ult-ready-assassin {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(170, 76, 255, 0.18), transparent 58%),
+    linear-gradient(180deg, rgba(56, 24, 92, 0.86), rgba(25, 8, 49, 0.92));
+  box-shadow:
+    inset 0 0 0 1px rgba(201, 137, 255, 0.18),
+    0 0 18px rgba(163, 74, 255, 0.28),
+    0 0 30px rgba(93, 25, 174, 0.2);
+}
+.ultimate-button.ult-ready-assassin::before {
+  background:
+    linear-gradient(115deg, transparent 10%, rgba(196, 125, 255, 0.5) 28%, transparent 42%),
+    linear-gradient(250deg, transparent 18%, rgba(134, 62, 255, 0.4) 35%, transparent 52%),
+    linear-gradient(180deg, rgba(30, 8, 53, 0.1), rgba(129, 58, 247, 0.2));
+  animation: ultAssassinLightning 1.35s linear infinite;
+}
+.ultimate-button.ult-ready-assassin::after {
+  inset: 8px;
+  border-radius: 16px;
+  border: 1px solid rgba(213, 153, 255, 0.34);
+  box-shadow: 0 0 22px rgba(156, 80, 255, 0.22);
+}
+.ultimate-button.ult-ready-assassin .skill-name {
+  color: #f4d6ff;
+}
+.ultimate-button.ult-ready-knight {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 215, 105, 0.24), transparent 44%),
+    linear-gradient(180deg, rgba(109, 66, 13, 0.92), rgba(52, 31, 8, 0.96));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 218, 122, 0.2),
+    0 0 20px rgba(255, 191, 71, 0.24),
+    0 0 34px rgba(255, 140, 44, 0.14);
+}
+.ultimate-button.ult-ready-knight::before {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 225, 153, 0.1) 22%, rgba(255, 180, 58, 0.45) 50%, rgba(255, 225, 153, 0.1) 78%, transparent 100%);
+  animation: ultKnightCharge 1.4s ease-in-out infinite;
+}
+.ultimate-button.ult-ready-knight::after {
+  inset: 9px;
+  border-radius: 17px;
+  border: 1px solid rgba(255, 226, 146, 0.42);
+  box-shadow: inset 0 0 18px rgba(255, 214, 111, 0.12);
+}
+.ultimate-button.ult-ready-knight .skill-name {
+  color: #fff0b0;
+}
+
+@keyframes ultMageHalo {
+  0%, 100% { opacity: .7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+@keyframes ultMagePulse {
+  0%, 100% { opacity: .45; box-shadow: 0 0 18px rgba(98, 171, 255, 0.22); }
+  50% { opacity: .9; box-shadow: 0 0 24px rgba(255, 216, 119, 0.2); }
+}
+
+@keyframes ultAssassinLightning {
+  0% { transform: translateX(-28%) skewX(-16deg); opacity: .18; }
+  18% { opacity: .72; }
+  36% { opacity: .28; }
+  52% { transform: translateX(0%) skewX(-16deg); opacity: .82; }
+  100% { transform: translateX(28%) skewX(-16deg); opacity: .16; }
+}
+
+@keyframes ultKnightCharge {
+  0% { transform: translateX(-36%); opacity: .18; }
+  25% { opacity: .52; }
+  55% { opacity: .92; }
+  100% { transform: translateX(36%); opacity: .2; }
+}
 
 .end-turn-button {
   min-width: 260px;

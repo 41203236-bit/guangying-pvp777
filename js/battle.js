@@ -236,7 +236,7 @@
     renderBoard(getMyBattle()?.board, getMyBattle());
     updateTimerDisplay();
     if (shouldShowMageUltSelfToast) {
-      state.mageUltResultGuideUntil = Date.now() + 2400;
+      state.mageUltResultGuideUntil = Date.now() + 3000;
       showUltGuideBanner({
         role: 'mage',
         title: '法師大招｜已生效',
@@ -248,7 +248,7 @@
       state.ultReadyBannerTimer = window.setTimeout(() => {
         state.mageUltResultGuideUntil = 0;
         clearUltReadyBanner();
-      }, 2400);
+      }, 3000);
     }
   }
 

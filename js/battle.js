@@ -236,7 +236,19 @@
     renderBoard(getMyBattle()?.board, getMyBattle());
     updateTimerDisplay();
     if (shouldShowMageUltSelfToast) {
-      showUltReadyBanner('法師大招已生效：你獲得 30 SP，對手本回合主動技已封鎖');
+      state.mageUltResultGuideUntil = Date.now() + 2400;
+      showUltGuideBanner({
+        role: 'mage',
+        title: '法師大招｜已生效',
+        main: '你獲得 <span class="guide-accent">30 SP</span>',
+        sub: '對手本回合主動技已被封鎖，本回合無法使用主動技',
+        resultClass: 'result-mage-ult'
+      });
+      if (state.ultReadyBannerTimer) window.clearTimeout(state.ultReadyBannerTimer);
+      state.ultReadyBannerTimer = window.setTimeout(() => {
+        state.mageUltResultGuideUntil = 0;
+        clearUltReadyBanner();
+      }, 2400);
     }
   }
 
@@ -1651,7 +1663,8 @@
         'role-assassin',
         'role-knight',
         'step-1',
-        'step-2'
+        'step-2',
+        'result-mage-ult'
       );
       els.ultReadyBanner.setAttribute('aria-hidden', 'true');
     }
@@ -1682,6 +1695,7 @@
     els.ultReadyBanner.classList.add('is-visible', 'is-guide');
     if (config.role) els.ultReadyBanner.classList.add(`role-${config.role}`);
     if (config.stepClass) els.ultReadyBanner.classList.add(config.stepClass);
+    if (config.resultClass) els.ultReadyBanner.classList.add(config.resultClass);
     els.ultReadyBanner.setAttribute('aria-hidden', 'false');
   }
 
@@ -1694,6 +1708,17 @@
     state.ultReadyBannerTimer = window.setTimeout(() => {
       clearUltReadyBanner();
     }, 5000);
+  }
+
+  function getPostEffectGuideBannerConfig() {
+    if (Date.now() >= normalizeNumber(state.mageUltResultGuideUntil, 0)) return null;
+    return {
+      role: 'mage',
+      title: '法師大招｜已生效',
+      main: '你獲得 <span class="guide-accent">30 SP</span>',
+      sub: '對手本回合主動技已被封鎖，本回合無法使用主動技',
+      resultClass: 'result-mage-ult'
+    };
   }
 
   function getUltGuideBannerConfig(battle) {
@@ -1793,6 +1818,11 @@
   }
 
   function renderUltGuideBanner(battle) {
+    const postEffectConfig = getPostEffectGuideBannerConfig();
+    if (postEffectConfig) {
+      showUltGuideBanner(postEffectConfig);
+      return;
+    }
     const config = getUltGuideBannerConfig(battle);
     if (config) {
       showUltGuideBanner(config);

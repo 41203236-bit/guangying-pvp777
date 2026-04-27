@@ -1882,3 +1882,16 @@ body::before {
     font-size: 12px;
   }
 }
+
+.ult-ready-banner.result-mage-ult.is-guide {
+  border-color: rgba(114, 205, 255, .4);
+}
+.ult-ready-banner.result-mage-ult .ult-guide-title {
+  margin-bottom: 10px;
+}
+.ult-ready-banner.result-mage-ult .ult-guide-main {
+  font-size: 28px;
+}
+.ult-ready-banner.result-mage-ult .ult-guide-sub {
+  margin-top: 8px;
+}

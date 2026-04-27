@@ -1699,8 +1699,8 @@
         step: 'STEP 1 / 1',
         stepClass: 'step-1',
         title: '法師主動技｜封鎖指定',
-        main: '請選擇 <span class="guide-accent">1 顆敵方棋子</span>',
-        sub: '被選中的棋子將受到封鎖影響，按 <span class="guide-keycap">Esc</span> 可取消'
+        main: '請選擇 <span class="guide-accent">1 格棋盤格子</span>',
+        sub: '被選中的格子將受到封鎖影響，按 <span class="guide-keycap">Esc</span> 可取消'
       };
     }
 

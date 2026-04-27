@@ -1610,6 +1610,7 @@
     fillSide('enemy', enemyMark, snapshotValue.players?.[enemyMark], accents[enemyMark]);
     buildUsageDots(els.skillUsageDots, snapshotValue.turn?.skillUsedCount || 0, 3);
     updateActionStates(snapshotValue);
+    renderUltGuideBanner(snapshotValue);
     renderLineEffect(snapshotValue.lineEffect, snapshotValue);
     renderFeedback(snapshotValue.feedback);
     renderBoard(snapshotValue.board, snapshotValue);
@@ -1634,21 +1635,163 @@
       state.ultReadyBannerTimer = null;
     }
     if (els.ultReadyBanner) {
-      els.ultReadyBanner.textContent = '';
-      els.ultReadyBanner.classList.remove('is-visible');
+      els.ultReadyBanner.innerHTML = '';
+      els.ultReadyBanner.classList.remove(
+        'is-visible',
+        'is-guide',
+        'is-toast',
+        'role-mage',
+        'role-assassin',
+        'role-knight',
+        'step-1',
+        'step-2'
+      );
       els.ultReadyBanner.setAttribute('aria-hidden', 'true');
     }
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[char] || char));
+  }
+
+  function buildGuideBannerMarkup(config) {
+    const stepHtml = config?.step ? `<span class="ult-guide-step">${escapeHtml(config.step)}</span>` : '';
+    const titleHtml = config?.title ? `<p class="ult-guide-title">${escapeHtml(config.title)}</p>` : '';
+    const mainHtml = config?.main ? `<p class="ult-guide-main">${config.main}</p>` : '';
+    const subHtml = config?.sub ? `<p class="ult-guide-sub">${config.sub}</p>` : '';
+    return `${stepHtml}${titleHtml}${mainHtml}${subHtml}`;
+  }
+
+  function showUltGuideBanner(config) {
+    if (!els.ultReadyBanner || !config) return;
+    clearUltReadyBanner();
+    els.ultReadyBanner.innerHTML = buildGuideBannerMarkup(config);
+    els.ultReadyBanner.classList.add('is-visible', 'is-guide');
+    if (config.role) els.ultReadyBanner.classList.add(`role-${config.role}`);
+    if (config.stepClass) els.ultReadyBanner.classList.add(config.stepClass);
+    els.ultReadyBanner.setAttribute('aria-hidden', 'false');
   }
 
   function showUltReadyBanner(message) {
     if (!els.ultReadyBanner || !message) return;
     clearUltReadyBanner();
-    els.ultReadyBanner.textContent = message;
-    els.ultReadyBanner.classList.add('is-visible');
+    els.ultReadyBanner.innerHTML = `<span class="ult-ready-toast-text">${escapeHtml(message)}</span>`;
+    els.ultReadyBanner.classList.add('is-visible', 'is-toast');
     els.ultReadyBanner.setAttribute('aria-hidden', 'false');
     state.ultReadyBannerTimer = window.setTimeout(() => {
       clearUltReadyBanner();
     }, 5000);
+  }
+
+  function getUltGuideBannerConfig(battle) {
+    if (!battle?.players) return null;
+    const role = battle.players?.[state.selfMark]?.role || '';
+
+    if (role === 'mage' && state.activeSkill === 'mage_seal' && state.uiMode === 'mage_active_targeting') {
+      return {
+        role: 'mage',
+        step: 'STEP 1 / 1',
+        stepClass: 'step-1',
+        title: '法師主動技｜封鎖指定',
+        main: '請選擇 <span class="guide-accent">1 顆敵方棋子</span>',
+        sub: '被選中的棋子將受到封鎖影響，按 <span class="guide-keycap">Esc</span> 可取消'
+      };
+    }
+
+    if (role === 'assassin' && state.activeSkill === 'assassin_swap') {
+      if (state.uiMode === 'assassin_active_source') {
+        return {
+          role: 'assassin',
+          step: 'STEP 1 / 2',
+          stepClass: 'step-1',
+          title: '刺客主動技｜第一步',
+          main: '請先選擇 <span class="guide-accent">1 顆己方棋子</span>',
+          sub: '接著要選擇上下左右相鄰的敵棋交換位置，按 <span class="guide-keycap">Esc</span> 可取消'
+        };
+      }
+      if (state.uiMode === 'assassin_active_target') {
+        return {
+          role: 'assassin',
+          step: 'STEP 2 / 2',
+          stepClass: 'step-2',
+          title: '刺客主動技｜第二步',
+          main: '請選擇 <span class="guide-accent">上下左右相鄰的敵棋</span>',
+          sub: '選定後會與第一顆己方棋交換位置；鎮守棋不可被換，按 <span class="guide-keycap">Esc</span> 可取消'
+        };
+      }
+    }
+
+    if (role === 'knight' && state.activeSkill === 'knight_push') {
+      if (state.uiMode === 'knight_active_source') {
+        return {
+          role: 'knight',
+          step: 'STEP 1 / 2',
+          stepClass: 'step-1',
+          title: '騎士主動技｜第一步',
+          main: '請先選擇 <span class="guide-accent">1 顆可推進的己方棋</span>',
+          sub: '接著要指定上下左右相鄰的空格前進，按 <span class="guide-keycap">Esc</span> 可取消'
+        };
+      }
+      if (state.uiMode === 'knight_active_target') {
+        return {
+          role: 'knight',
+          step: 'STEP 2 / 2',
+          stepClass: 'step-2',
+          title: '騎士主動技｜第二步',
+          main: '請選擇 <span class="guide-accent">上下左右相鄰的空格</span>',
+          sub: '選定後該棋會前進 1 格完成推進，按 <span class="guide-keycap">Esc</span> 可取消'
+        };
+      }
+    }
+
+    if (role === 'assassin' && state.activeSkill === 'assassin_ult') {
+      if (state.uiMode === 'assassin_ult_primary') {
+        return {
+          role: 'assassin',
+          step: 'STEP 1 / 2',
+          stepClass: 'step-1',
+          title: '刺客大招｜第一步',
+          main: '請先選擇 <span class="guide-accent">1 顆敵方棋子</span>',
+          sub: '該棋子將進入斷界狀態，本回合無法參與連線，按 <span class="guide-keycap">Esc</span> 可取消'
+        };
+      }
+      if (state.uiMode === 'assassin_ult_secondary') {
+        return {
+          role: 'assassin',
+          step: 'STEP 2 / 2',
+          stepClass: 'step-2',
+          title: '刺客大招｜第二步（可略過）',
+          main: '可再選擇 <span class="guide-accent">1 顆鄰近敵棋</span>',
+          sub: '只能選主目標八方格內的敵棋，點棋盤空白格可略過，按 <span class="guide-keycap">Esc</span> 可取消'
+        };
+      }
+    }
+    if (role === 'knight' && state.activeSkill === 'knight_ult' && state.uiMode === 'knight_ult_target') {
+      return {
+        role: 'knight',
+        step: 'STEP 1 / 1',
+        stepClass: 'step-1',
+        title: '騎士大招｜鎮守指定',
+        main: '請選擇 <span class="guide-accent">1 顆己方棋子</span>',
+        sub: '被選中的棋子將進入鎮守狀態，並立刻獲得 <span class="guide-accent">2 層護盾</span> 與 <span class="guide-accent">回復 15 HP</span>，按 <span class="guide-keycap">Esc</span> 可取消'
+      };
+    }
+    return null;
+  }
+
+  function renderUltGuideBanner(battle) {
+    const config = getUltGuideBannerConfig(battle);
+    if (config) {
+      showUltGuideBanner(config);
+      return;
+    }
+    if (els.ultReadyBanner?.classList.contains('is-guide')) clearUltReadyBanner();
   }
 
   function maybeShowUltReadyBanner(battle) {
@@ -2693,6 +2836,7 @@
           const battle = getMyBattle();
           const role = (battle?.players?.[state.selfMark]?.role || '');
           if (role === 'mage') {
+            showUltReadyBanner('法師大招發動：立即獲得 30 SP，並封鎖對手本回合主動技');
             useMageUltimate();
           } else if (role === 'assassin') {
             if (!isAssassinUltimateAvailable(battle, state.selfMark)) return;
@@ -2733,6 +2877,7 @@
       if (role === 'mage') {
         if (!isMageUltimateAvailable(battle, state.selfMark)) return;
         event.preventDefault();
+        showUltReadyBanner('法師大招發動：立即獲得 30 SP，並封鎖對手本回合主動技');
         useMageUltimate();
         return;
       }

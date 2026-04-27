@@ -110,7 +110,8 @@
     currentWinVideoEventId: '',
     lastResultVideoEventId: '',
     cinematicFailSafeTimer: null,
-    frozenTimerText: ''
+    frozenTimerText: '',
+    pendingMageUltSelfToast: false
   };
 
 
@@ -213,6 +214,8 @@
 
   function finishUltCinematic() {
     if (!state.isUltCinematicPlaying) return;
+    const shouldShowMageUltSelfToast = !!state.pendingMageUltSelfToast;
+    state.pendingMageUltSelfToast = false;
     clearCinematicFailSafe();
     state.isUltCinematicPlaying = false;
     state.currentUltVideoEventId = '';
@@ -232,6 +235,9 @@
     updateActionStates(getMyBattle());
     renderBoard(getMyBattle()?.board, getMyBattle());
     updateTimerDisplay();
+    if (shouldShowMageUltSelfToast) {
+      showUltReadyBanner('法師大招已生效：你獲得 30 SP，對手本回合主動技已封鎖');
+    }
   }
 
  function playUltCinematic(event) {
@@ -253,6 +259,7 @@
   state.handledUltVideoIds.add(event.id);
   state.currentUltVideoEventId = event.id;
   state.isUltCinematicPlaying = true;
+  state.pendingMageUltSelfToast = event.role === 'mage' && event.actorMark === state.selfMark;
   state.frozenTimerText = els.timerValue ? els.timerValue.textContent : '';
   setCinematicPageState(true);
   pauseBattleBgm();
@@ -2836,7 +2843,6 @@
           const battle = getMyBattle();
           const role = (battle?.players?.[state.selfMark]?.role || '');
           if (role === 'mage') {
-            showUltReadyBanner('法師大招發動：立即獲得 30 SP，並封鎖對手本回合主動技');
             useMageUltimate();
           } else if (role === 'assassin') {
             if (!isAssassinUltimateAvailable(battle, state.selfMark)) return;
@@ -2877,7 +2883,6 @@
       if (role === 'mage') {
         if (!isMageUltimateAvailable(battle, state.selfMark)) return;
         event.preventDefault();
-        showUltReadyBanner('法師大招發動：立即獲得 30 SP，並封鎖對手本回合主動技');
         useMageUltimate();
         return;
       }

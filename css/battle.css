@@ -410,7 +410,7 @@ body::before {
   position: absolute;
   left: 50%;
   top: -58px;
-  z-index: 8;
+  z-index: 12;
   opacity: 0;
   transform: translate(-50%, -8px) scale(.98);
   pointer-events: none;
@@ -430,11 +430,117 @@ body::before {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: opacity .18s ease, transform .18s ease;
 }
 .ult-ready-banner.is-visible {
   opacity: 1;
   transform: translate(-50%, 0) scale(1);
   animation: ultReadyPulse 1.05s ease-in-out infinite alternate;
+}
+.ult-ready-banner.is-toast {
+  white-space: nowrap;
+}
+.ult-ready-banner.is-guide {
+  top: calc(100% + 18px);
+  max-width: min(560px, calc(100vw - 56px));
+  width: min(500px, calc(100vw - 88px));
+  padding: 16px 20px 18px;
+  border-radius: 28px;
+  border: 1px solid rgba(130, 213, 255, .28);
+  background: linear-gradient(180deg, rgba(5, 12, 34, .94), rgba(4, 10, 26, .92));
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .38), 0 0 28px rgba(70, 170, 255, .12), inset 0 0 0 1px rgba(255, 255, 255, .03);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  animation: none;
+}
+.ult-ready-banner.is-guide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(120, 245, 255, .05), transparent 42%, rgba(255,255,255,.02));
+}
+.ult-ready-banner.role-assassin.is-guide {
+  border-color: rgba(174, 108, 255, .35);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .4), 0 0 28px rgba(174, 108, 255, .18), inset 0 0 0 1px rgba(255,255,255,.03);
+}
+.ult-ready-banner.role-knight.is-guide {
+  border-color: rgba(243, 202, 105, .4);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .4), 0 0 28px rgba(243, 202, 105, .18), inset 0 0 0 1px rgba(255,255,255,.03);
+}
+.ult-ready-banner.role-mage.is-guide {
+  border-color: rgba(114, 205, 255, .38);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .4), 0 0 28px rgba(114, 205, 255, .18), inset 0 0 0 1px rgba(255,255,255,.03);
+}
+.ult-guide-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 94px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: #88e7ff;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .8px;
+  margin-bottom: 10px;
+}
+.ult-ready-banner.role-assassin .ult-guide-step { color: #d9b7ff; }
+.ult-ready-banner.role-knight .ult-guide-step { color: #ffe7a8; }
+.ult-guide-title {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 900;
+  color: #f7fbff;
+  letter-spacing: .6px;
+}
+.ult-guide-main {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.3;
+  color: #ffffff;
+}
+.ult-guide-sub {
+  margin: 10px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.55;
+  color: rgba(219, 237, 255, .88);
+}
+.guide-accent {
+  color: #7fefff;
+  text-shadow: 0 0 12px rgba(127, 239, 255, .22);
+}
+.ult-ready-banner.role-assassin .guide-accent {
+  color: #d39cff;
+  text-shadow: 0 0 12px rgba(211, 156, 255, .22);
+}
+.ult-ready-banner.role-knight .guide-accent {
+  color: #ffd86e;
+  text-shadow: 0 0 12px rgba(255, 216, 110, .24);
+}
+.guide-keycap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  padding: 2px 8px;
+  margin: 0 2px;
+  border-radius: 9px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+  color: #fff3c2;
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: .4px;
+}
+.ult-ready-toast-text {
+  display: inline-block;
 }
 @keyframes ultReadyPulse {
   0% { box-shadow: 0 10px 28px rgba(0, 0, 0, .34), 0 0 10px rgba(243, 202, 105, .12); }
@@ -730,6 +836,134 @@ body::before {
   font-weight: 900;
 }
 .ultimate-button .skill-name { color: #ff9eb3; }
+
+.ultimate-button {
+  isolation: isolate;
+  transition: transform .2s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease;
+}
+.ultimate-button::before,
+.ultimate-button::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+.ultimate-button .skill-name {
+  position: relative;
+  z-index: 2;
+  transition: color .25s ease, text-shadow .25s ease, transform .25s ease;
+}
+.ultimate-button.ult-ready {
+  border-color: rgba(255, 214, 128, 0.55);
+  transform: translateY(-1px);
+}
+.ultimate-button.ult-ready::before,
+.ultimate-button.ult-ready::after {
+  opacity: 1;
+}
+.ultimate-button.ult-ready .skill-name {
+  text-shadow: 0 0 16px rgba(255, 234, 171, 0.38);
+}
+.ultimate-button.ult-ready-mage {
+  background:
+    radial-gradient(circle at 50% 10%, rgba(255, 232, 162, 0.16), transparent 45%),
+    linear-gradient(180deg, rgba(64, 120, 255, 0.18), rgba(255, 211, 95, 0.08)),
+    rgba(255,255,255,0.03);
+  box-shadow:
+    inset 0 0 0 1px rgba(130, 185, 255, 0.2),
+    0 0 18px rgba(88, 142, 255, 0.26),
+    0 0 32px rgba(255, 209, 102, 0.14);
+}
+.ultimate-button.ult-ready-mage::before {
+  background: linear-gradient(135deg, rgba(94, 169, 255, 0.34), rgba(255, 215, 121, 0.18), rgba(109, 141, 255, 0.28));
+  filter: blur(0.5px);
+  animation: ultMageHalo 2.2s ease-in-out infinite;
+}
+.ultimate-button.ult-ready-mage::after {
+  inset: 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 221, 143, 0.5);
+  box-shadow: 0 0 18px rgba(98, 171, 255, 0.28);
+  animation: ultMagePulse 1.8s ease-in-out infinite;
+}
+.ultimate-button.ult-ready-mage .skill-name {
+  color: #ffe7a2;
+}
+.ultimate-button.ult-ready-assassin {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(170, 76, 255, 0.18), transparent 58%),
+    linear-gradient(180deg, rgba(56, 24, 92, 0.86), rgba(25, 8, 49, 0.92));
+  box-shadow:
+    inset 0 0 0 1px rgba(201, 137, 255, 0.18),
+    0 0 18px rgba(163, 74, 255, 0.28),
+    0 0 30px rgba(93, 25, 174, 0.2);
+}
+.ultimate-button.ult-ready-assassin::before {
+  background:
+    linear-gradient(115deg, transparent 10%, rgba(196, 125, 255, 0.5) 28%, transparent 42%),
+    linear-gradient(250deg, transparent 18%, rgba(134, 62, 255, 0.4) 35%, transparent 52%),
+    linear-gradient(180deg, rgba(30, 8, 53, 0.1), rgba(129, 58, 247, 0.2));
+  animation: ultAssassinLightning 1.35s linear infinite;
+}
+.ultimate-button.ult-ready-assassin::after {
+  inset: 8px;
+  border-radius: 16px;
+  border: 1px solid rgba(213, 153, 255, 0.34);
+  box-shadow: 0 0 22px rgba(156, 80, 255, 0.22);
+}
+.ultimate-button.ult-ready-assassin .skill-name {
+  color: #f4d6ff;
+}
+.ultimate-button.ult-ready-knight {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 215, 105, 0.24), transparent 44%),
+    linear-gradient(180deg, rgba(109, 66, 13, 0.92), rgba(52, 31, 8, 0.96));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 218, 122, 0.2),
+    0 0 20px rgba(255, 191, 71, 0.24),
+    0 0 34px rgba(255, 140, 44, 0.14);
+}
+.ultimate-button.ult-ready-knight::before {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 225, 153, 0.1) 22%, rgba(255, 180, 58, 0.45) 50%, rgba(255, 225, 153, 0.1) 78%, transparent 100%);
+  animation: ultKnightCharge 1.4s ease-in-out infinite;
+}
+.ultimate-button.ult-ready-knight::after {
+  inset: 9px;
+  border-radius: 17px;
+  border: 1px solid rgba(255, 226, 146, 0.42);
+  box-shadow: inset 0 0 18px rgba(255, 214, 111, 0.12);
+}
+.ultimate-button.ult-ready-knight .skill-name {
+  color: #fff0b0;
+}
+
+@keyframes ultMageHalo {
+  0%, 100% { opacity: .7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+@keyframes ultMagePulse {
+  0%, 100% { opacity: .45; box-shadow: 0 0 18px rgba(98, 171, 255, 0.22); }
+  50% { opacity: .9; box-shadow: 0 0 24px rgba(255, 216, 119, 0.2); }
+}
+
+@keyframes ultAssassinLightning {
+  0% { transform: translateX(-28%) skewX(-16deg); opacity: .18; }
+  18% { opacity: .72; }
+  36% { opacity: .28; }
+  52% { transform: translateX(0%) skewX(-16deg); opacity: .82; }
+  100% { transform: translateX(28%) skewX(-16deg); opacity: .16; }
+}
+
+@keyframes ultKnightCharge {
+  0% { transform: translateX(-36%); opacity: .18; }
+  25% { opacity: .52; }
+  55% { opacity: .92; }
+  100% { transform: translateX(36%); opacity: .2; }
+}
 
 .end-turn-button {
   min-width: 260px;
@@ -1632,4 +1866,32 @@ body::before {
 .battle-page.is-cinematic-playing .board-stage,
 .battle-page.is-cinematic-playing .battle-bottom {
   pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .ult-ready-banner.is-guide {
+    width: min(440px, calc(100vw - 34px));
+    max-width: min(500px, calc(100vw - 34px));
+    top: calc(100% + 14px);
+    padding: 14px 16px 16px;
+  }
+  .ult-guide-main {
+    font-size: 20px;
+  }
+  .ult-guide-sub {
+    font-size: 12px;
+  }
+}
+
+.ult-ready-banner.result-mage-ult.is-guide {
+  border-color: rgba(114, 205, 255, .4);
+}
+.ult-ready-banner.result-mage-ult .ult-guide-title {
+  margin-bottom: 10px;
+}
+.ult-ready-banner.result-mage-ult .ult-guide-main {
+  font-size: 28px;
+}
+.ult-ready-banner.result-mage-ult .ult-guide-sub {
+  margin-top: 8px;
 }

@@ -1159,15 +1159,16 @@
 
   function triggerAttackHitEffect(targetMark, seedSource) {
     const isSelf = targetMark === state.selfMark;
-    const fighterSide = isSelf ? els.myFighterSide : els.enemyFighterSide;
+    const portrait = isSelf ? els.myPortrait : els.enemyPortrait;
+    const portraitFrame = portrait?.closest('.portrait-frame');
     const hpColumn = (isSelf ? els.myHpPercent : els.enemyHpPercent)?.closest('.hp-column');
-    [fighterSide, hpColumn].forEach((node) => {
+    [portraitFrame, hpColumn].forEach((node) => {
       if (!node) return;
       node.classList.remove('hit-shake');
       void node.offsetWidth;
       node.classList.add('hit-shake');
     });
-    const targetRect = (fighterSide || hpColumn)?.getBoundingClientRect();
+    const targetRect = (portraitFrame || hpColumn)?.getBoundingClientRect();
     if (!targetRect) return;
     const slash = document.createElement('div');
     const variant = pickSlashVariant(seedSource || `${targetMark}:${Date.now()}`);
@@ -1941,7 +1942,6 @@
     if (!actor || (actor.role || '') !== 'mage') return false;
     if (current.turn.turnPlayer !== actorMark) return false;
     const playerState = getPlayerState(current, actorMark);
-    if (playerState?.activeSkillLock) return false;
     return canUseUltimateNow(actor, current.turn);
   }
 
@@ -2128,8 +2128,6 @@
     const actor = current.players[actorMark];
     if (!actor || (actor.role || '') !== 'knight') return false;
     if (current.turn.turnPlayer !== actorMark) return false;
-    const playerState = getPlayerState(current, actorMark);
-    if (playerState?.activeSkillLock) return false;
     if (!canUseUltimateNow(actor, current.turn)) return false;
     return getKnightUltTargetIndexes(current, actorMark).length > 0;
   }

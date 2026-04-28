@@ -1453,7 +1453,8 @@ body::before {
   mix-blend-mode: multiply;
   border-radius: 8px;
 }
-.fighter-side.hit-shake {
+.portrait-frame.hit-shake,
+.portrait-frame img.hit-shake {
   animation: hitShake 420ms cubic-bezier(.36,.07,.19,.97) both;
 }
 .hp-column.hit-shake {

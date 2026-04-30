@@ -17,7 +17,7 @@
     [0, 4, 8], [2, 4, 6]
   ];
   const SP_MAX = 500;
-  const TURN_START_SP_GAIN = 10;
+  const TURN_START_SP_GAIN = 25;
   const ROLE_ACTIVE_SP_COST = 60;
   const BASE_LINE_SP = 40;
   const CENTER_LINE_BONUS = 40;
@@ -898,7 +898,24 @@
     if (!playerState) return;
     const turnPlayerData = current.players?.[nextPlayer];
     if (turnPlayerData) {
-      turnPlayerData.sp = Math.min(SP_MAX, normalizeNumber(turnPlayerData.sp, 0) + TURN_START_SP_GAIN);
+      const beforeSp = normalizeNumber(turnPlayerData.sp, 0);
+      const afterSp = Math.min(SP_MAX, beforeSp + TURN_START_SP_GAIN);
+      const gainedSp = Math.max(0, afterSp - beforeSp);
+      turnPlayerData.sp = afterSp;
+      if (gainedSp > 0) {
+        const turnStartSpEvent = createFeedbackEvent(nextPlayer, 'sp', gainedSp);
+        if (current.feedback && Array.isArray(current.feedback.events)) {
+          current.feedback.events.push(turnStartSpEvent);
+          current.feedback.id = `feedback-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+          current.feedback.expiresAt = Date.now() + 2200;
+        } else {
+          current.feedback = {
+            id: `feedback-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+            events: [turnStartSpEvent],
+            expiresAt: Date.now() + 2200
+          };
+        }
+      }
     }
     playerState.ownTurnStarts = normalizeNumber(playerState.ownTurnStarts, 0) + 1;
   }

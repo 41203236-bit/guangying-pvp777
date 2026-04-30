@@ -1896,3 +1896,280 @@ body::before {
 .ult-ready-banner.result-mage-ult .ult-guide-sub {
   margin-top: 8px;
 }
+
+
+/* ===== Battle random PNG background v2 ===== */
+.battle-random-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--battle-bg-image);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  transform: scale(1.03);
+  filter: saturate(1.08) contrast(1.04) brightness(0.78);
+  opacity: 1;
+}
+
+.battle-random-backdrop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(3, 7, 16, 0.18), rgba(3, 7, 16, 0.62) 58%, rgba(2, 4, 10, 0.82) 100%),
+    linear-gradient(90deg, rgba(2, 5, 12, 0.56), rgba(2, 5, 12, 0.22) 42%, rgba(2, 5, 12, 0.56)),
+    linear-gradient(180deg, rgba(2, 5, 12, 0.72), rgba(2, 5, 12, 0.18) 42%, rgba(2, 5, 12, 0.78));
+}
+
+.battle-random-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 28%, rgba(35, 222, 255, 0.16), transparent 26%),
+    radial-gradient(circle at 82% 26%, rgba(164, 108, 255, 0.18), transparent 28%),
+    radial-gradient(circle at 50% 76%, rgba(255, 205, 105, 0.06), transparent 24%);
+  mix-blend-mode: screen;
+  opacity: 0.72;
+}
+
+body::before {
+  z-index: 1;
+}
+
+.battle-bg-glow {
+  z-index: 2;
+}
+
+.battle-page {
+  z-index: 3;
+}
+
+body.has-battle-bg {
+  background: #020610;
+}
+
+body.has-battle-bg .battle-page {
+  position: relative;
+}
+
+body.has-battle-bg .fighter-card,
+body.has-battle-bg .board-shell,
+body.has-battle-bg .action-bar,
+body.has-battle-bg .round-pill {
+  backdrop-filter: blur(10px);
+}
+
+
+/* ===== Battle random PNG background v3 HARD FIX ===== */
+.battle-random-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  background-image: url("../assets/battle-bg/battle_bg_01.png") !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.battle-random-bg-image {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  opacity: 0.92 !important;
+  filter: saturate(1.13) contrast(1.03) brightness(1.03) !important;
+  transform: scale(1.02) !important;
+}
+
+.battle-random-bg-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(2, 6, 14, 0.04), rgba(2, 6, 14, 0.12) 54%, rgba(2, 5, 12, 0.28) 100%),
+    linear-gradient(90deg, rgba(2, 5, 12, 0.22), rgba(2, 5, 12, 0.04) 42%, rgba(2, 5, 12, 0.22)),
+    linear-gradient(180deg, rgba(2, 5, 12, 0.24), rgba(2, 5, 12, 0.03) 44%, rgba(2, 5, 12, 0.32)) !important;
+}
+
+body.has-battle-bg {
+  background: #020610 !important;
+}
+
+body.has-battle-bg::before {
+  z-index: 1 !important;
+  opacity: 0.22 !important;
+}
+
+body.has-battle-bg .battle-bg-glow {
+  z-index: 2 !important;
+}
+
+body.has-battle-bg .battle-page {
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+body.has-battle-bg .corner-chip {
+  z-index: 20 !important;
+}
+
+body.has-battle-bg .fighter-card,
+body.has-battle-bg .board-shell,
+body.has-battle-bg .action-bar,
+body.has-battle-bg .round-pill {
+  background-color: rgba(4, 10, 24, 0.74);
+  backdrop-filter: blur(9px);
+}
+
+
+/* ===== Low HP danger breathing frame ===== */
+.low-hp-warning {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .22s ease;
+}
+
+.low-hp-warning::before,
+.low-hp-warning::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.low-hp-warning::before {
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 50%, rgba(255, 23, 45, 0.08) 64%, rgba(255, 0, 28, 0.30) 100%),
+    linear-gradient(90deg, rgba(255, 0, 28, .35), transparent 18%, transparent 82%, rgba(255, 0, 28, .35)),
+    linear-gradient(180deg, rgba(255, 0, 28, .35), transparent 20%, transparent 80%, rgba(255, 0, 28, .35));
+  box-shadow: inset 0 0 80px rgba(255, 0, 28, .40), inset 0 0 26px rgba(255, 92, 104, .26);
+}
+
+.low-hp-warning::after {
+  inset: 10px;
+  border-radius: 22px;
+  border: 2px solid rgba(255, 65, 82, .26);
+  box-shadow: 0 0 28px rgba(255, 0, 28, .28), inset 0 0 34px rgba(255, 0, 28, .18);
+}
+
+.low-hp-warning.is-active {
+  opacity: 1;
+  animation: lowHpPulse 1.22s ease-in-out infinite;
+}
+
+@keyframes lowHpPulse {
+  0%, 100% { opacity: .42; filter: saturate(1) brightness(.95); }
+  48% { opacity: .98; filter: saturate(1.25) brightness(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .low-hp-warning.is-active {
+    animation: none !important;
+    opacity: .68;
+  }
+}
+
+
+/* ===== Mage ultimate active-skill chain lock visual ===== */
+.skill-button.active-skill.is-mage-active-locked {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(190, 130, 255, 0.54);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.035),
+    0 0 22px rgba(159, 88, 255, 0.22),
+    0 0 32px rgba(255, 66, 104, 0.08);
+  filter: saturate(0.72) brightness(0.72);
+}
+
+.skill-button.active-skill.is-mage-active-locked img,
+.skill-button.active-skill.is-mage-active-locked .skill-ult-gain {
+  filter: grayscale(0.42) brightness(0.68);
+}
+
+.skill-button.active-skill.is-mage-active-locked::before {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      transparent 0 10px,
+      rgba(229, 222, 255, 0.92) 10px 14px,
+      rgba(90, 60, 130, 0.92) 14px 18px,
+      transparent 18px 30px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 18px,
+      rgba(180, 134, 255, 0.72) 18px 22px,
+      rgba(44, 24, 72, 0.82) 22px 26px,
+      transparent 26px 42px
+    );
+  opacity: 0.84;
+  mix-blend-mode: screen;
+  transform: translate3d(-4%, 0, 0);
+  animation: mageChainSlide 2.2s linear infinite;
+}
+
+.skill-button.active-skill.is-mage-active-locked::after {
+  content: "封鎖";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  min-width: 54px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(238, 224, 255, 0.36);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(120, 55, 180, 0.78), rgba(22, 10, 38, 0.92));
+  color: #fff2ff;
+  font-size: 14px;
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 10px rgba(255,255,255,0.5), 0 0 18px rgba(177, 94, 255, 0.64);
+  box-shadow:
+    0 0 16px rgba(177, 94, 255, 0.36),
+    inset 0 0 12px rgba(255,255,255,0.08);
+  animation: mageSealPulse 1.25s ease-in-out infinite;
+}
+
+@keyframes mageChainSlide {
+  0% { transform: translate3d(-8%, -2%, 0); opacity: 0.68; }
+  50% { transform: translate3d(0%, 2%, 0); opacity: 0.94; }
+  100% { transform: translate3d(8%, -2%, 0); opacity: 0.68; }
+}
+
+@keyframes mageSealPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0.82;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.06);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-button.active-skill.is-mage-active-locked::before,
+  .skill-button.active-skill.is-mage-active-locked::after {
+    animation: none !important;
+  }
+}

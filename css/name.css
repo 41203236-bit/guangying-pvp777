@@ -857,3 +857,234 @@ body.name-page {
   .meteor { width: 96px; }
   .intro-start-sub { font-size: 12px; letter-spacing: .12em; }
 }
+
+/* ===== v2 luxury name-page background polish ===== */
+html,
+body {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(255, 198, 94, 0.14), transparent 18%),
+    radial-gradient(circle at 84% 18%, rgba(112, 170, 255, 0.16), transparent 20%),
+    radial-gradient(circle at 50% 68%, rgba(117, 74, 255, 0.14), transparent 24%),
+    linear-gradient(125deg, #020714 0%, #071126 26%, #0c1832 48%, #17123a 72%, #241042 100%);
+}
+
+body.name-page {
+  isolation: isolate;
+}
+
+body.name-page::before {
+  background:
+    radial-gradient(circle at 12% 26%, rgba(255, 206, 108, 0.18), transparent 18%),
+    radial-gradient(circle at 26% 72%, rgba(73, 214, 255, 0.10), transparent 16%),
+    radial-gradient(circle at 52% 34%, rgba(136, 111, 255, 0.12), transparent 22%),
+    radial-gradient(circle at 74% 20%, rgba(255, 190, 86, 0.10), transparent 14%),
+    radial-gradient(circle at 86% 72%, rgba(111, 210, 255, 0.12), transparent 18%),
+    radial-gradient(circle at 64% 82%, rgba(171, 114, 255, 0.10), transparent 16%);
+  filter: blur(18px) saturate(115%);
+  opacity: 1;
+  animation: nameNebulaFloat 16s ease-in-out infinite alternate;
+}
+
+body.name-page::after {
+  background-image:
+    linear-gradient(rgba(95, 122, 198, 0.040) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(95, 122, 198, 0.040) 1px, transparent 1px),
+    radial-gradient(circle at 8% 18%, rgba(255,255,255,.70) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 14% 72%, rgba(255,255,255,.66) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 28% 38%, rgba(255,255,255,.72) 0 1.1px, transparent 1.8px),
+    radial-gradient(circle at 42% 14%, rgba(255,255,255,.64) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 56% 64%, rgba(255,255,255,.74) 0 1.1px, transparent 1.8px),
+    radial-gradient(circle at 72% 30%, rgba(255,255,255,.68) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 84% 82%, rgba(255,255,255,.72) 0 1.1px, transparent 1.8px),
+    radial-gradient(circle at 94% 26%, rgba(255,255,255,.64) 0 1px, transparent 1.7px);
+  background-size: 38px 38px, 38px 38px, auto, auto, auto, auto, auto, auto, auto, auto;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,.68), rgba(0,0,0,.12));
+  opacity: .62;
+  animation: nameGridFloat 14s ease-in-out infinite alternate;
+}
+
+.page-shell {
+  background:
+    linear-gradient(180deg, rgba(4, 10, 24, 0.66), rgba(6, 11, 27, 0.60)),
+    radial-gradient(circle at 16% 16%, rgba(255, 205, 114, 0.06), transparent 18%),
+    radial-gradient(circle at 82% 22%, rgba(123, 168, 255, 0.08), transparent 20%),
+    radial-gradient(circle at 52% 84%, rgba(159, 102, 255, 0.06), transparent 20%);
+  border: 1px solid rgba(132, 175, 255, 0.24);
+  box-shadow: 0 26px 64px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(255,255,255,0.02) inset;
+  backdrop-filter: blur(16px);
+}
+
+.page-shell::before,
+.page-shell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.page-shell::before {
+  background:
+    radial-gradient(circle at 14% 24%, rgba(255, 202, 103, 0.12), transparent 14%),
+    radial-gradient(circle at 86% 22%, rgba(102, 208, 255, 0.12), transparent 16%),
+    radial-gradient(circle at 64% 72%, rgba(164, 120, 255, 0.10), transparent 18%);
+  filter: blur(22px);
+  animation: pageAuraShift 11s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+.page-shell::after {
+  background:
+    linear-gradient(112deg, transparent 0%, rgba(122, 216, 255, 0.00) 32%, rgba(122, 216, 255, 0.055) 42%, rgba(255, 196, 84, 0.06) 50%, rgba(155, 118, 255, 0.05) 58%, transparent 68%),
+    linear-gradient(128deg, transparent 0%, rgba(255, 208, 118, 0.00) 48%, rgba(255, 208, 118, 0.04) 54%, transparent 62%);
+  transform: translateX(-100%);
+  animation: nameShellSweep 10.5s ease-in-out infinite;
+  z-index: 0;
+}
+
+.hero-panel,
+.form-panel {
+  z-index: 1;
+}
+
+.hero-panel {
+  background:
+    radial-gradient(circle at 50% 34%, rgba(132, 102, 255, 0.18), transparent 20%),
+    radial-gradient(circle at 50% 78%, rgba(255, 198, 83, 0.12), transparent 12%),
+    linear-gradient(180deg, rgba(16, 28, 64, 0.34), rgba(4, 11, 26, 0.10));
+}
+
+.hero-panel::before {
+  width: 460px;
+  height: 460px;
+  top: -200px;
+  left: -140px;
+  background: radial-gradient(circle, rgba(87, 208, 255, 0.28), transparent 68%);
+  filter: blur(14px);
+  animation: heroOrbFloat 12s ease-in-out infinite alternate;
+}
+
+.hero-panel::after {
+  width: 420px;
+  height: 420px;
+  right: -140px;
+  bottom: -190px;
+  background: radial-gradient(circle, rgba(255, 193, 69, 0.20), transparent 70%);
+  filter: blur(14px);
+  animation: heroOrbFloatReverse 13.5s ease-in-out infinite alternate;
+}
+
+.hero-tech-rings {
+  opacity: .74;
+  filter: drop-shadow(0 0 18px rgba(131, 195, 255, 0.08));
+}
+
+.hero-tech-rings::before {
+  box-shadow: inset 0 0 36px rgba(66, 170, 255, 0.08), 0 0 52px rgba(123, 108, 255, 0.10);
+}
+
+.hero-tech-rings::after {
+  box-shadow: 0 0 32px rgba(255, 198, 83, 0.12);
+}
+
+.hero-badge {
+  background: linear-gradient(180deg, rgba(25, 37, 78, 0.54), rgba(16, 23, 52, 0.40));
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset, 0 0 18px rgba(126, 190, 255, 0.05);
+}
+
+.game-title {
+  text-shadow: 0 0 18px rgba(255, 194, 90, 0.12), 0 0 34px rgba(124, 178, 255, 0.16), 0 0 56px rgba(161, 102, 255, 0.08);
+}
+
+.hero-subtitle {
+  color: #d7deef;
+}
+
+.form-panel {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(90, 180, 255, 0.07), transparent 18%),
+    radial-gradient(circle at 86% 18%, rgba(255, 193, 82, 0.05), transparent 16%),
+    linear-gradient(180deg, rgba(8, 14, 31, 0.06), rgba(8, 14, 31, 0));
+}
+
+.panel-card {
+  border: 1px solid rgba(127, 177, 255, 0.20);
+  background:
+    linear-gradient(180deg, rgba(10, 20, 44, 0.92), rgba(5, 11, 28, 0.97)),
+    radial-gradient(circle at 18% 14%, rgba(68, 193, 255, 0.10), transparent 24%),
+    radial-gradient(circle at 82% 18%, rgba(255, 188, 66, 0.10), transparent 20%),
+    radial-gradient(circle at 56% 86%, rgba(143, 104, 255, 0.08), transparent 20%);
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.42), 0 0 34px rgba(118, 179, 255, 0.05), inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+
+.panel-card::before {
+  background: linear-gradient(120deg, transparent 0%, rgba(133, 214, 255, 0.06) 26%, transparent 40%, rgba(255, 193, 76, 0.06) 72%, transparent 100%);
+  animation: panelSweep 8.2s ease-in-out infinite;
+}
+
+.input-wrap {
+  box-shadow: inset 0 0 18px rgba(76, 131, 255, 0.06), 0 0 0 1px rgba(255,255,255,0.015);
+}
+
+.input-wrap:focus-within {
+  box-shadow: 0 0 0 3px rgba(46, 198, 255, 0.14), 0 0 26px rgba(99, 196, 255, 0.22), 0 0 40px rgba(255, 196, 88, 0.06);
+}
+
+.primary-button,
+.secondary-button {
+  box-shadow: 0 10px 22px rgba(0,0,0,.22);
+}
+
+.name-page .page-shell-ready {
+  animation: namePageReadyGlow .65s ease;
+}
+
+@keyframes nameNebulaFloat {
+  0% { transform: scale(1) translate3d(0, 0, 0); }
+  50% { transform: scale(1.04) translate3d(1.5%, -1.4%, 0); }
+  100% { transform: scale(1.07) translate3d(-1.4%, 1.2%, 0); }
+}
+
+@keyframes nameGridFloat {
+  0% { transform: translate3d(0, 0, 0); opacity: .56; }
+  50% { transform: translate3d(.4%, -.8%, 0); opacity: .66; }
+  100% { transform: translate3d(-.4%, .7%, 0); opacity: .60; }
+}
+
+@keyframes pageAuraShift {
+  0% { transform: translate3d(0, 0, 0) scale(1); opacity: .92; }
+  100% { transform: translate3d(1.6%, -1.2%, 0) scale(1.04); opacity: 1; }
+}
+
+@keyframes nameShellSweep {
+  0%, 14% { transform: translateX(-100%); opacity: 0; }
+  24% { opacity: 1; }
+  48% { transform: translateX(100%); opacity: 1; }
+  60%, 100% { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes heroOrbFloat {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(1.8%, 1.4%, 0) scale(1.06); }
+}
+
+@keyframes heroOrbFloatReverse {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-1.8%, -1.4%, 0) scale(1.05); }
+}
+
+@keyframes namePageReadyGlow {
+  0% { opacity: 0; transform: translateY(18px) scale(.985); filter: blur(10px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.name-page::before,
+  body.name-page::after,
+  .page-shell::before,
+  .page-shell::after,
+  .hero-panel::before,
+  .hero-panel::after,
+  .name-page .page-shell-ready {
+    animation: none !important;
+  }
+}

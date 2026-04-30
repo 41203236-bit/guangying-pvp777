@@ -24,6 +24,8 @@
 html, body { min-height: 100%; }
 body {
   margin: 0;
+  position: relative;
+  overflow-x: hidden;
   color: var(--text);
   font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
   background:
@@ -34,6 +36,8 @@ body {
 }
 
 .room-page {
+  position: relative;
+  z-index: 1;
   width: min(100%, 1700px);
   min-height: 100vh;
   margin: 0 auto;
@@ -416,6 +420,7 @@ body {
 
 .room-toast {
   position: fixed;
+  z-index: 20;
   left: 50%;
   bottom: 28px;
   transform: translateX(-50%) translateY(16px);
@@ -690,7 +695,11 @@ body {
   .ambient-stars,
   .ambient-constellation,
   .ambient-arc,
-  .ambient-glow {
+  .ambient-glow,
+  .edge-mist,
+  .edge-stars,
+  .edge-orb,
+  .edge-trails {
     animation: none !important;
   }
 }
@@ -703,6 +712,7 @@ body {
 }
 
 @media (max-width: 1200px) {
+  .edge-ambient { display: none; }
   .room-page {
     grid-template-columns: 1fr;
     width: min(100%, 980px);
@@ -731,4 +741,203 @@ body {
   .brand-block { padding-left: 10px; padding-right: 10px; }
   .brand-block h1 { font-size: 44px; }
   .portrait-shell { min-height: 260px; }
+}
+
+
+.edge-ambient {
+  --edge-core: rgba(120, 165, 255, 0.34);
+  --edge-core-soft: rgba(168, 126, 255, 0.24);
+  --edge-spark: rgba(255,255,255,0.92);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: max(0px, calc((100vw - min(100vw, 1700px)) / 2));
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+  opacity: 0.82;
+  transition: opacity 260ms ease, filter 260ms ease;
+}
+
+.edge-left { left: 0; }
+.edge-right { right: 0; }
+.edge-ambient > div { position: absolute; inset: 0; }
+
+.edge-fade {
+  opacity: 0.95;
+}
+.edge-left .edge-fade {
+  background: linear-gradient(90deg, rgba(3, 10, 24, 0.08) 0%, rgba(7, 15, 35, 0.12) 36%, rgba(7, 15, 35, 0) 100%);
+}
+.edge-right .edge-fade {
+  background: linear-gradient(270deg, rgba(12, 10, 28, 0.1) 0%, rgba(9, 14, 35, 0.14) 34%, rgba(9, 14, 35, 0) 100%);
+}
+
+.edge-mist {
+  filter: blur(14px);
+  opacity: 0.95;
+  animation: edgeMistFloat 18s ease-in-out infinite alternate;
+}
+.edge-mist-a { animation-duration: 16s; }
+.edge-mist-b { animation-duration: 22s; animation-direction: alternate-reverse; opacity: 0.72; }
+
+.edge-orb {
+  inset: auto;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  filter: blur(44px);
+  opacity: 0.36;
+  animation: edgeOrbPulse 7.8s ease-in-out infinite;
+}
+.edge-left .edge-orb-a { top: 10%; left: -72px; }
+.edge-left .edge-orb-b { bottom: 14%; right: -54px; animation-delay: 1.8s; }
+.edge-right .edge-orb-a { top: 14%; right: -68px; }
+.edge-right .edge-orb-b { bottom: 10%; left: -48px; animation-delay: 1.8s; }
+
+.edge-stars {
+  opacity: 0.9;
+  animation: edgeTwinkle 7s ease-in-out infinite alternate;
+}
+.edge-stars-b { opacity: 0.55; animation-duration: 9.8s; animation-direction: alternate-reverse; }
+
+.edge-left .edge-stars-a {
+  background-image:
+    radial-gradient(circle at 18% 12%, var(--edge-spark) 0 1.3px, transparent 2.1px),
+    radial-gradient(circle at 28% 24%, rgba(255,255,255,0.7) 0 1px, transparent 1.9px),
+    radial-gradient(circle at 16% 42%, rgba(255,255,255,0.76) 0 1.1px, transparent 2px),
+    radial-gradient(circle at 30% 61%, rgba(255,255,255,0.68) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 24% 84%, rgba(255,255,255,0.92) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 74% 30%, rgba(255,255,255,0.54) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 72% 74%, rgba(255,255,255,0.5) 0 1px, transparent 1.8px);
+}
+.edge-left .edge-stars-b {
+  background-image:
+    radial-gradient(circle at 20% 18%, rgba(255,255,255,0.58) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 24% 36%, rgba(255,255,255,0.66) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 34% 54%, rgba(255,255,255,0.52) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 18% 73%, rgba(255,255,255,0.78) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 30% 90%, rgba(255,255,255,0.48) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 76% 44%, rgba(255,255,255,0.42) 0 1px, transparent 1.6px);
+}
+.edge-right .edge-stars-a {
+  background-image:
+    radial-gradient(circle at 82% 12%, var(--edge-spark) 0 1.3px, transparent 2.1px),
+    radial-gradient(circle at 72% 24%, rgba(255,255,255,0.72) 0 1px, transparent 1.9px),
+    radial-gradient(circle at 84% 42%, rgba(255,255,255,0.78) 0 1.1px, transparent 2px),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.68) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 78% 84%, rgba(255,255,255,0.92) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 26% 32%, rgba(255,255,255,0.54) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 28% 74%, rgba(255,255,255,0.48) 0 1px, transparent 1.8px);
+}
+.edge-right .edge-stars-b {
+  background-image:
+    radial-gradient(circle at 80% 18%, rgba(255,255,255,0.58) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 76% 36%, rgba(255,255,255,0.66) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 66% 54%, rgba(255,255,255,0.52) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 82% 73%, rgba(255,255,255,0.78) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 70% 90%, rgba(255,255,255,0.48) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 24% 44%, rgba(255,255,255,0.42) 0 1px, transparent 1.6px);
+}
+
+.edge-trails {
+  opacity: 0.72;
+  animation: edgeTrailsMove 12s linear infinite;
+}
+.edge-left .edge-trails {
+  background:
+    linear-gradient(128deg, transparent 0 32%, rgba(255,255,255,0.0) 33%, rgba(255,255,255,0.36) 34%, rgba(255,255,255,0.0) 35%, transparent 36%) no-repeat 8% 18% / 90px 90px,
+    linear-gradient(124deg, transparent 0 44%, rgba(255,255,255,0.0) 45%, rgba(255,255,255,0.28) 46%, rgba(255,255,255,0.0) 47%, transparent 48%) no-repeat 28% 60% / 110px 110px,
+    linear-gradient(132deg, transparent 0 38%, rgba(255,255,255,0.0) 39%, rgba(255,255,255,0.22) 40%, rgba(255,255,255,0.0) 41%, transparent 42%) no-repeat 12% 80% / 70px 70px;
+}
+.edge-right .edge-trails {
+  background:
+    linear-gradient(232deg, transparent 0 32%, rgba(255,255,255,0.0) 33%, rgba(255,255,255,0.36) 34%, rgba(255,255,255,0.0) 35%, transparent 36%) no-repeat 92% 18% / 90px 90px,
+    linear-gradient(236deg, transparent 0 44%, rgba(255,255,255,0.0) 45%, rgba(255,255,255,0.28) 46%, rgba(255,255,255,0.0) 47%, transparent 48%) no-repeat 72% 60% / 110px 110px,
+    linear-gradient(228deg, transparent 0 38%, rgba(255,255,255,0.0) 39%, rgba(255,255,255,0.22) 40%, rgba(255,255,255,0.0) 41%, transparent 42%) no-repeat 88% 80% / 70px 70px;
+}
+
+.edge-ambient[data-camp="light"] {
+  --edge-core: rgba(255, 214, 102, 0.38);
+  --edge-core-soft: rgba(121, 225, 255, 0.26);
+  --edge-spark: rgba(255, 250, 228, 0.96);
+  opacity: 1;
+  filter: saturate(1.12);
+}
+.edge-ambient[data-camp="light"] .edge-mist-a {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 214, 102, 0.34), transparent 24%),
+    radial-gradient(circle at 34% 56%, rgba(121, 225, 255, 0.18), transparent 24%),
+    radial-gradient(circle at 24% 86%, rgba(255, 190, 76, 0.22), transparent 28%);
+}
+.edge-ambient[data-camp="light"] .edge-mist-b {
+  background:
+    radial-gradient(circle at 68% 16%, rgba(255, 224, 145, 0.16), transparent 18%),
+    radial-gradient(circle at 78% 70%, rgba(96, 204, 255, 0.14), transparent 18%);
+}
+.edge-ambient[data-camp="light"] .edge-orb {
+  background: radial-gradient(circle, rgba(255, 220, 136, 0.46), rgba(120, 221, 255, 0.18), rgba(255, 220, 136, 0));
+}
+
+.edge-ambient[data-camp="dark"] {
+  --edge-core: rgba(171, 123, 255, 0.34);
+  --edge-core-soft: rgba(94, 189, 255, 0.22);
+  --edge-spark: rgba(243, 236, 255, 0.94);
+  opacity: 1;
+  filter: saturate(1.15);
+}
+.edge-ambient[data-camp="dark"] .edge-mist-a {
+  background:
+    radial-gradient(circle at 84% 16%, rgba(172, 124, 255, 0.34), transparent 24%),
+    radial-gradient(circle at 72% 54%, rgba(99, 170, 255, 0.18), transparent 24%),
+    radial-gradient(circle at 82% 86%, rgba(147, 106, 255, 0.24), transparent 28%);
+}
+.edge-ambient[data-camp="dark"] .edge-mist-b {
+  background:
+    radial-gradient(circle at 28% 14%, rgba(214, 173, 255, 0.16), transparent 18%),
+    radial-gradient(circle at 18% 68%, rgba(96, 202, 255, 0.12), transparent 18%);
+}
+.edge-ambient[data-camp="dark"] .edge-orb {
+  background: radial-gradient(circle, rgba(191, 156, 255, 0.42), rgba(103, 200, 255, 0.14), rgba(191, 156, 255, 0));
+}
+
+.edge-ambient[data-camp="none"] {
+  opacity: 0.45;
+  filter: saturate(0.86);
+}
+.edge-ambient[data-camp="none"] .edge-mist-a {
+  background:
+    radial-gradient(circle at 28% 22%, rgba(116, 170, 255, 0.16), transparent 24%),
+    radial-gradient(circle at 78% 68%, rgba(158, 125, 255, 0.14), transparent 28%);
+}
+.edge-ambient[data-camp="none"] .edge-mist-b {
+  background:
+    radial-gradient(circle at 64% 16%, rgba(176, 206, 255, 0.08), transparent 18%),
+    radial-gradient(circle at 24% 82%, rgba(196, 173, 255, 0.08), transparent 18%);
+}
+.edge-ambient[data-camp="none"] .edge-orb {
+  background: radial-gradient(circle, rgba(116, 170, 255, 0.18), rgba(158, 125, 255, 0.12), rgba(116, 170, 255, 0));
+}
+
+@keyframes edgeMistFloat {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(1.4%, -1.5%, 0) scale(1.05); }
+  100% { transform: translate3d(-1.1%, 1.8%, 0) scale(1.07); }
+}
+
+@keyframes edgeOrbPulse {
+  0%, 100% { transform: scale(0.92); opacity: 0.18; }
+  50% { transform: scale(1.14); opacity: 0.44; }
+}
+
+@keyframes edgeTwinkle {
+  0% { opacity: 0.32; }
+  50% { opacity: 0.84; }
+  100% { opacity: 0.48; }
+}
+
+@keyframes edgeTrailsMove {
+  0% { transform: translate3d(0, -1%, 0); opacity: 0.32; }
+  50% { transform: translate3d(2%, 1.5%, 0); opacity: 0.72; }
+  100% { transform: translate3d(-1%, 2%, 0); opacity: 0.42; }
 }

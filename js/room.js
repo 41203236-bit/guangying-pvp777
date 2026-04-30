@@ -29,6 +29,7 @@
     myActiveName: document.getElementById('my-active-name'),
     myActiveDetail: document.getElementById('my-active-detail'),
     playerPanel: document.querySelector('.player-panel'),
+    leftEdgeAmbient: document.getElementById('left-edge-ambient'),
 
     enemyCampPill: document.getElementById('enemy-camp-pill'),
     enemyCharacterName: document.getElementById('enemy-character-name'),
@@ -39,6 +40,7 @@
     enemyActiveDetail: document.getElementById('enemy-active-detail'),
     enemyPortraitShell: document.querySelector('.enemy-panel .portrait-shell'),
     enemyPanel: document.querySelector('.enemy-panel'),
+    rightEdgeAmbient: document.getElementById('right-edge-ambient'),
 
     currentPlayerName: document.getElementById('current-player-name'),
     roomCode: document.getElementById('room-code'),
@@ -197,12 +199,18 @@
     panelEl.setAttribute('data-camp', camp || 'none');
   }
 
+  function applyEdgeCamp(edgeEl, camp) {
+    if (!edgeEl) return;
+    edgeEl.setAttribute('data-camp', camp || 'none');
+  }
+
   function fillMyPanel() {
     const basic = state.basic;
     const mark = state.myMark || '--';
     els.myCampMarkPill.textContent = `我的陣營：${campLabel(basic.playerCamp)} / ${mark}`;
     els.currentPlayerName.textContent = `玩家名稱：${basic.playerName}`;
     applyPanelCamp(els.playerPanel, basic.playerCamp || 'none');
+    applyEdgeCamp(els.leftEdgeAmbient, basic.playerCamp || 'none');
 
     if (!basic.character) {
       els.myCharacterName.textContent = '尚未同步角色';
@@ -221,6 +229,7 @@
 
   function fillEnemyPlaceholder() {
     applyPanelCamp(els.enemyPanel, 'none');
+    applyEdgeCamp(els.rightEdgeAmbient, 'none');
     els.enemyCampPill.textContent = '對手陣營：未顯示';
     els.enemyCharacterName.textContent = '尚未同步角色';
     els.enemyCharacterRole.textContent = '對手尚未加入或尚未完成選角。';
@@ -242,6 +251,7 @@
 
     const character = getCharacter(enemyPlayer.role);
     applyPanelCamp(els.enemyPanel, enemyPlayer.faction || 'none');
+    applyEdgeCamp(els.rightEdgeAmbient, enemyPlayer.faction || 'none');
     els.enemyCampPill.textContent = `對手陣營：${campLabel(enemyPlayer.faction)} / ${state.myMark === 'O' ? 'X' : 'O'}`;
     els.enemyCharacterName.textContent = character ? `${character.name}・${character.englishName}` : '尚未同步角色';
     els.enemyCharacterRole.textContent = character ? character.role : '對手角色資料異常';

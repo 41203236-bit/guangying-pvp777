@@ -16,8 +16,11 @@
     [0, 3, 6], [1, 4, 7], [2, 5, 8],
     [0, 4, 8], [2, 4, 6]
   ];
-  const BASE_LINE_SP = 20;
-  const CENTER_LINE_BONUS = 20;
+  const SP_MAX = 500;
+  const TURN_START_SP_GAIN = 10;
+  const ROLE_ACTIVE_SP_COST = 60;
+  const BASE_LINE_SP = 40;
+  const CENTER_LINE_BONUS = 40;
 
   const els = {
     roomCode: document.getElementById('battle-room-code'),
@@ -27,6 +30,9 @@
     grid: document.getElementById('battle-grid'),
     boardTurnOverlay: document.getElementById('board-turn-overlay'),
     page: document.querySelector('.battle-page'),
+    randomBackdrop: document.getElementById('battle-random-backdrop'),
+    randomBackdropImage: document.getElementById('battle-random-bg-image'),
+    lowHpWarning: document.getElementById('low-hp-warning'),
 
     myIdentityBadge: document.getElementById('my-identity-badge'),
     myPortrait: document.getElementById('my-battle-portrait'),
@@ -111,14 +117,15 @@
     lastResultVideoEventId: '',
     cinematicFailSafeTimer: null,
     frozenTimerText: '',
-    pendingMageUltSelfToast: false
+    pendingMageUltSelfToast: false,
+    pendingDeferredFeedback: null
   };
 
 
   const SKILL_CONFIG = {
-    atk: { cost: 1, ultGain: 25, damage: 10, sound: 'atk' },
-    def: { cost: 2, ultGain: 20, sound: 'def' },
-    hel: { cost: 2, ultGain: 20, heal: 8, sound: 'hel' }
+    atk: { cost: 20, ultGain: 25, damage: 10, sound: 'atk' },
+    def: { cost: 40, ultGain: 20, sound: 'def' },
+    hel: { cost: 40, ultGain: 20, heal: 35, sound: 'hel' }
   };
 
   const sounds = {
@@ -235,6 +242,11 @@
     updateActionStates(getMyBattle());
     renderBoard(getMyBattle()?.board, getMyBattle());
     updateTimerDisplay();
+    if (state.pendingDeferredFeedback) {
+      const deferredFeedback = state.pendingDeferredFeedback;
+      state.pendingDeferredFeedback = null;
+      renderFeedback({ ...deferredFeedback, deferUntilUltEnd: false });
+    }
     if (shouldShowMageUltSelfToast) {
       state.mageUltResultGuideUntil = Date.now() + 3000;
       showUltGuideBanner({
@@ -517,10 +529,13 @@
   }
 
 
-  function buildEnergyStars(container, value, onSrc, offSrc, className) {
+  function buildEnergyStars(container, value, onSrc, offSrc, className, maxValue = 100) {
     if (!container) return;
-    const lit = Math.floor((value || 0) / 20);
-    const remainder = (value || 0) % 20;
+    const safeMax = Math.max(1, normalizeNumber(maxValue, 100));
+    const step = safeMax / 5;
+    const safeValue = Math.max(0, Math.min(safeMax, normalizeNumber(value, 0)));
+    const lit = Math.floor(safeValue / step);
+    const remainder = safeValue % step;
     container.innerHTML = '';
     for (let index = 0; index < 5; index += 1) {
       const image = document.createElement('img');
@@ -881,6 +896,10 @@
     });
     const playerState = current.playerStates[nextPlayer];
     if (!playerState) return;
+    const turnPlayerData = current.players?.[nextPlayer];
+    if (turnPlayerData) {
+      turnPlayerData.sp = Math.min(SP_MAX, normalizeNumber(turnPlayerData.sp, 0) + TURN_START_SP_GAIN);
+    }
     playerState.ownTurnStarts = normalizeNumber(playerState.ownTurnStarts, 0) + 1;
   }
 
@@ -1050,7 +1069,7 @@
     current.players = current.players || {};
     current.players[lineOwner] = current.players[lineOwner] || {};
     const actingPlayer = current.players[lineOwner];
-    actingPlayer.sp = Math.min(100, normalizeNumber(actingPlayer.sp, 0) + reward);
+    actingPlayer.sp = Math.min(SP_MAX, normalizeNumber(actingPlayer.sp, 0) + reward);
 
     const feedbackEvents = [];
     if (reward > 0) feedbackEvents.push(createFeedbackEvent(lineOwner, 'sp', reward));
@@ -1111,9 +1130,19 @@
 
 
   function showTopFloat(targetMark, amount, kind) {
-    const type = kind === 'sp' ? 'sp' : kind === 'ult' ? 'ult' : kind === 'damage' ? 'damage' : kind === 'block' ? 'block' : 'hp';
+    const type = kind === 'sp_loss'
+      ? 'sp_loss'
+      : kind === 'sp'
+        ? 'sp'
+        : kind === 'ult'
+          ? 'ult'
+          : kind === 'damage'
+            ? 'damage'
+            : kind === 'block'
+              ? 'block'
+              : 'hp';
     const isSelf = targetMark === state.selfMark;
-    const host = type === 'sp'
+    const host = (type === 'sp' || type === 'sp_loss')
       ? (isSelf ? els.mySpStars : els.enemySpStars)
       : type === 'ult'
         ? (isSelf ? els.myUltStars : els.enemyUltStars)
@@ -1121,9 +1150,10 @@
     if (!host) return;
     const rect = host.getBoundingClientRect();
     const float = document.createElement('div');
-    float.className = `top-float-text ${type}`;
+    float.className = `top-float-text ${type === 'sp_loss' ? 'sp' : type}`;
     const safeAmount = Math.abs(Number(amount || 0));
     if (type === 'damage') float.textContent = `-${safeAmount} HP`;
+    else if (type === 'sp_loss') float.textContent = `-${safeAmount} SP`;
     else if (type === 'block') float.textContent = 'BLOCK';
     else float.textContent = `+${safeAmount} ${type.toUpperCase()}`;
     let x = rect.left + rect.width / 2;
@@ -1148,6 +1178,14 @@
     if (!overlay) return;
     const hp = Math.max(0, Math.min(100, normalizeNumber(hpValue, 100)));
     overlay.style.height = `${100 - hp}%`;
+  }
+
+  function updateLowHpWarning(hpValue) {
+    if (!els.lowHpWarning) return;
+    const hp = Math.max(0, Math.min(100, normalizeNumber(hpValue, 100)));
+    const active = hp > 0 && hp <= 30;
+    els.lowHpWarning.classList.toggle('is-active', active);
+    els.lowHpWarning.setAttribute('aria-hidden', active ? 'false' : 'true');
   }
 
   function pickSlashVariant(seedSource) {
@@ -1190,12 +1228,17 @@
 
   function renderFeedback(feedback) {
     if (!feedback || !feedback.id || state.shownFeedbackIds.has(feedback.id)) return;
+    if (feedback.deferUntilUltEnd && state.isUltCinematicPlaying) {
+      state.pendingDeferredFeedback = feedback;
+      return;
+    }
     state.shownFeedbackIds.add(feedback.id);
     const events = Array.isArray(feedback.events) ? feedback.events : [];
     events.forEach((event) => {
       if (!event) return;
       if (event.type === 'heal') showTopFloat(event.targetMark, event.amount, 'hp');
       if (event.type === 'sp') showTopFloat(event.targetMark, event.amount, 'sp');
+      if (event.type === 'sp_loss') showTopFloat(event.targetMark, event.amount, 'sp_loss');
       if (event.type === 'ult') showTopFloat(event.targetMark, event.amount, 'ult');
       if (event.type === 'damage') { showTopFloat(event.targetMark, event.amount, 'damage'); triggerAttackHitEffect(event.targetMark, `${feedback.id}:damage:${event.targetMark}`); }
       if (event.type === 'block') { showTopFloat(event.targetMark, event.amount, 'block'); triggerAttackHitEffect(event.targetMark, `${feedback.id}:damage:${event.targetMark}`); }
@@ -1355,8 +1398,8 @@
       hpColumn?.classList.add('shield-one');
       refs.campEffect.classList.add('shield-one');
     }
-    buildEnergyStars(refs.spStars, safePlayer.sp || 0, 'assets/ui/sp_on.png', 'assets/ui/sp_off.png', 'energy-star');
-    if (refs.spValue) refs.spValue.textContent = `SP ${normalizeNumber(safePlayer.sp, 0)} / 100`;
+    buildEnergyStars(refs.spStars, safePlayer.sp || 0, 'assets/ui/sp_on.png', 'assets/ui/sp_off.png', 'energy-star', SP_MAX);
+    if (refs.spValue) refs.spValue.textContent = `SP ${normalizeNumber(safePlayer.sp, 0)} / ${SP_MAX}`;
     buildEnergyStars(refs.ultStars, safePlayer.ult || 0, 'assets/ui/ult_on.png', 'assets/ui/ult_off.png', 'ult-star');
     if (refs.ultValue) refs.ultValue.textContent = `ULT ${normalizeNumber(safePlayer.ult, 0)} / 100`;
   }
@@ -1387,6 +1430,8 @@
       els.endTurnButton.classList.toggle('is-clickable', !disabled);
     }
     const myRole = (myPlayer.role || '');
+    const myPlayerState = getPlayerState(currentBattle, state.selfMark);
+    const isMageActiveLockedByUlt = !!(myPlayerState?.activeSkillLock && myPlayerState.activeSkillLock.source === 'mage_ult');
     const canUseMageActive = !locked && !state.actionInFlight && isMageActiveAvailable(currentBattle, state.selfMark);
     const canUseAssassinActive = !locked && !state.actionInFlight && isAssassinActiveAvailable(currentBattle, state.selfMark);
     const canUseKnightActive = !locked && !state.actionInFlight && isKnightActiveAvailable(currentBattle, state.selfMark);
@@ -1424,6 +1469,8 @@
         disabled = true;
       }
       if (skill !== 'ult') button.classList.remove('ult-ready', 'ult-ready-mage', 'ult-ready-assassin', 'ult-ready-knight');
+      button.classList.toggle('is-mage-active-locked', skill === 'active' && isMageActiveLockedByUlt);
+      if (skill === 'active') button.setAttribute('aria-label', isMageActiveLockedByUlt ? '主動技已被法師大招封鎖' : '主動技');
       button.disabled = disabled;
       button.classList.toggle('is-clickable', !disabled);
     });
@@ -1527,7 +1574,7 @@
       board: Array(9).fill(null),
       players: {
         O: {
-          hp: 100, sp: 0, ult: 0, camp: players.O?.camp || 'light', role: players.O?.role || 'mage', name: players.O?.name || '玩家一',
+          hp: 100, sp: TURN_START_SP_GAIN, ult: 0, camp: players.O?.camp || 'light', role: players.O?.role || 'mage', name: players.O?.name || '玩家一',
           shieldStacks: 0, darkStacks: 0, pieceOrder: [], online: true, mark: 'O'
         },
         X: {
@@ -1627,6 +1674,7 @@
     maybeHandleCinematics(snapshotValue);
     const accents = getDisplayAccents(snapshotValue);
     fillSide('my', myMark, snapshotValue.players?.[myMark], accents[myMark]);
+    updateLowHpWarning(snapshotValue.players?.[myMark]?.hp);
     fillSide('enemy', enemyMark, snapshotValue.players?.[enemyMark], accents[enemyMark]);
     buildUsageDots(els.skillUsageDots, snapshotValue.turn?.skillUsedCount || 0, 3);
     updateActionStates(snapshotValue);
@@ -1898,9 +1946,6 @@
 
   function createNextTurnState(previousTurn, currentBattle) {
     const nextPlayer = previousTurn.turnPlayer === 'O' ? 'X' : 'O';
-    if (currentBattle && currentBattle.players && currentBattle.players[nextPlayer]) {
-      currentBattle.players[nextPlayer].shieldStacks = 0;
-    }
     if (currentBattle) {
       cleanupEndOfTurnEffects(currentBattle, previousTurn.turnPlayer);
       applyTurnStartBookkeeping(currentBattle, nextPlayer);
@@ -1955,7 +2000,7 @@
     if (normalizeNumber(current.turn.skillUsedCount, 0) >= 3) return false;
     const playerState = getPlayerState(current, actorMark);
     if (playerState?.activeSkillLock) return false;
-    if (normalizeNumber(actor.sp, 0) < 3) return false;
+    if (normalizeNumber(actor.sp, 0) < ROLE_ACTIVE_SP_COST) return false;
     const board = normalizeBoard(current.board);
     const tileEffects = normalizeTileEffects(current.tileEffects);
     return board.some((mark, index) => !mark && !(tileEffects[index] && tileEffects[index].effectType === 'mage_seal' && tileEffects[index].blockedMark === actorMark));
@@ -2045,7 +2090,7 @@
     if (normalizeNumber(current.turn.skillUsedCount, 0) >= 3) return false;
     const playerState = getPlayerState(current, actorMark);
     if (playerState?.activeSkillLock) return false;
-    if (normalizeNumber(actor.sp, 0) < 3) return false;
+    if (normalizeNumber(actor.sp, 0) < ROLE_ACTIVE_SP_COST) return false;
     return getAssassinSourceIndexes(current, actorMark).length > 0;
   }
 
@@ -2110,7 +2155,7 @@
     if (normalizeNumber(current.turn.skillUsedCount, 0) >= 3) return false;
     const playerState = getPlayerState(current, actorMark);
     if (playerState?.activeSkillLock) return false;
-    if (normalizeNumber(actor.sp, 0) < 3) return false;
+    if (normalizeNumber(actor.sp, 0) < ROLE_ACTIVE_SP_COST) return false;
     return getKnightSourceIndexes(current, actorMark).length > 0;
   }
 
@@ -2270,7 +2315,7 @@
         if (existingEffect && existingEffect.effectType === 'mage_seal' && existingEffect.blockedMark === state.selfMark) return current;
         const actor = current.players[state.selfMark];
         if (!actor) return current;
-        actor.sp = Math.max(0, normalizeNumber(actor.sp, 0) - 3);
+        actor.sp = Math.max(0, normalizeNumber(actor.sp, 0) - ROLE_ACTIVE_SP_COST);
         spendUltGain(actor, 35);
         current.turn.skillUsedCount = normalizeNumber(current.turn.skillUsedCount, 0) + 1;
         const enemyMark = state.selfMark === 'O' ? 'X' : 'O';
@@ -2308,7 +2353,7 @@
         if (!legalTargets.includes(Number(targetIndex))) return current;
         const actor = current.players[state.selfMark];
         if (!actor) return current;
-        actor.sp = Math.max(0, normalizeNumber(actor.sp, 0) - 3);
+        actor.sp = Math.max(0, normalizeNumber(actor.sp, 0) - ROLE_ACTIVE_SP_COST);
         spendUltGain(actor, 35);
         current.turn.skillUsedCount = normalizeNumber(current.turn.skillUsedCount, 0) + 1;
 
@@ -2373,7 +2418,7 @@
         if (!legalTargets.includes(Number(targetIndex))) return current;
         const actor = current.players[state.selfMark];
         if (!actor) return current;
-        actor.sp = Math.max(0, normalizeNumber(actor.sp, 0) - 3);
+        actor.sp = Math.max(0, normalizeNumber(actor.sp, 0) - ROLE_ACTIVE_SP_COST);
         spendUltGain(actor, 35);
         current.turn.skillUsedCount = normalizeNumber(current.turn.skillUsedCount, 0) + 1;
 
@@ -2478,24 +2523,31 @@
         ensureBattleStateLayers(current);
         const actor = current.players[state.selfMark];
         const enemyMark = state.selfMark === 'O' ? 'X' : 'O';
+        const enemy = current.players[enemyMark];
         const enemyState = getPlayerState(current, enemyMark);
-        if (!actor || !enemyState) return current;
+        if (!actor || !enemy || !enemyState) return current;
         actor.ult = 0;
-        actor.sp = Math.min(100, normalizeNumber(actor.sp, 0) + 30);
+        const enemySpBefore = Math.max(0, normalizeNumber(enemy.sp, 0));
+        const drainedSp = enemySpBefore > 0 ? Math.max(1, Math.floor(enemySpBefore * 0.2)) : 0;
+        enemy.sp = Math.max(0, enemySpBefore - drainedSp);
+        actor.sp = Math.min(SP_MAX, normalizeNumber(actor.sp, 0) + 30);
         enemyState.activeSkillLock = {
           source: 'mage_ult',
           ownerMark: state.selfMark,
           amount: 1,
           expiresAtTurnEndOf: enemyMark
         };
+        const ultEvent = createCinematicEvent('mage', state.selfMark, 'ult');
+        const events = [createFeedbackEvent(state.selfMark, 'sp', 30)];
+        if (drainedSp > 0) events.push(createFeedbackEvent(enemyMark, 'sp_loss', drainedSp));
         current.feedback = {
           id: `feedback-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-          events: [
-            createFeedbackEvent(state.selfMark, 'sp', 30)
-          ],
-          expiresAt: Date.now() + 2200
+          events,
+          expiresAt: Date.now() + 2200,
+          deferUntilUltEnd: true,
+          ultEventId: ultEvent.id
         };
-        current.cinematics.ultEvent = createCinematicEvent('mage', state.selfMark, 'ult');
+        current.cinematics.ultEvent = ultEvent;
         return current;
       });
       if (result && result.committed) playSound('stn');
@@ -2519,8 +2571,9 @@
         ensureBattleStateLayers(current);
         const actor = current.players[state.selfMark];
         const enemyMark = state.selfMark === 'O' ? 'X' : 'O';
+        const enemy = current.players[enemyMark];
         const board = normalizeBoard(current.board);
-        if (!actor || board[primaryIndex] !== enemyMark) return current;
+        if (!actor || !enemy || board[primaryIndex] !== enemyMark) return current;
         const legalPrimary = getAssassinUltPrimaryIndexes(current, state.selfMark);
         if (!legalPrimary.includes(Number(primaryIndex))) return current;
         let targets = [Number(primaryIndex)];
@@ -2546,8 +2599,18 @@
             expiresAtTurnEndOf: enemyMark
           };
         });
-        current.feedback = null;
-        current.cinematics.ultEvent = createCinematicEvent('assassin', state.selfMark, 'ult');
+        const damageAmount = targets.length >= 2 ? 30 : 15;
+        enemy.hp = Math.max(0, normalizeNumber(enemy.hp, 100) - damageAmount);
+        applyGameOverIfNeeded(current, '刺客大招斷刺');
+        const ultEvent = createCinematicEvent('assassin', state.selfMark, 'ult');
+        current.feedback = {
+          id: `feedback-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          events: [createFeedbackEvent(enemyMark, 'damage', damageAmount)],
+          expiresAt: Date.now() + 2200,
+          deferUntilUltEnd: true,
+          ultEventId: ultEvent.id
+        };
+        current.cinematics.ultEvent = ultEvent;
         return current;
       });
       if (result && result.committed) playSound('stn');
@@ -2967,7 +3030,32 @@
     state.unsubscribeBattle = () => ref.off('value', handler);
   }
 
+  const BATTLE_BACKGROUND_IMAGES = [
+    'assets/battle-bg/battle_bg_01.png',
+    'assets/battle-bg/battle_bg_02.png',
+    'assets/battle-bg/battle_bg_03.png'
+  ];
+
+  function applyRandomBattleBackground() {
+    if (!BATTLE_BACKGROUND_IMAGES.length) return;
+    const selectedIndex = Math.floor(Math.random() * BATTLE_BACKGROUND_IMAGES.length);
+    const selectedPath = BATTLE_BACKGROUND_IMAGES[selectedIndex];
+
+    // Two-layer approach:
+    // 1) img src: guaranteed visible even if CSS variable fails
+    // 2) backgroundImage: fallback if image element is not available
+    if (els.randomBackdropImage) {
+      els.randomBackdropImage.src = selectedPath;
+    }
+    if (els.randomBackdrop) {
+      els.randomBackdrop.style.backgroundImage = `url("${selectedPath}")`;
+      els.randomBackdrop.dataset.bgIndex = String(selectedIndex + 1);
+    }
+    document.body.classList.add('has-battle-bg');
+  }
+
   function init() {
+    applyRandomBattleBackground();
     const params = new URLSearchParams(window.location.search);
     state.roomId = params.get('room') || storage.getPendingBattleRoomId() || storage.getCurrentRoomId() || '';
 

@@ -24,7 +24,81 @@ html, body {
     radial-gradient(circle at 50% 68%, rgba(126, 81, 255, 0.1), transparent 20%),
     linear-gradient(135deg, var(--bg-1), var(--bg-2) 48%, var(--bg-3));
 }
-body { position: relative; }
+body { position: relative; overflow-x: hidden; transition: background 0.45s ease; }
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.45s ease, filter 0.45s ease;
+}
+
+body::before {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(85, 196, 255, 0.16), transparent 22%),
+    radial-gradient(circle at 80% 18%, rgba(168, 96, 255, 0.14), transparent 24%),
+    radial-gradient(circle at 52% 74%, rgba(255, 194, 74, 0.07), transparent 22%);
+  filter: blur(8px);
+  opacity: .82;
+}
+
+body::after {
+  background-image:
+    linear-gradient(rgba(113, 142, 224, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(113, 142, 224, 0.045) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.34), rgba(0,0,0,.04));
+  opacity: .42;
+}
+
+body.camp-light {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 216, 116, 0.22), transparent 25%),
+    radial-gradient(circle at 82% 22%, rgba(255, 155, 56, 0.14), transparent 26%),
+    radial-gradient(circle at 48% 72%, rgba(255, 235, 171, 0.10), transparent 24%),
+    linear-gradient(135deg, #050815, #101b30 45%, #2c1c0b);
+}
+
+body.camp-light::before {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 214, 98, 0.26), transparent 24%),
+    radial-gradient(circle at 72% 38%, rgba(255, 169, 69, 0.14), transparent 22%),
+    radial-gradient(circle at 50% 74%, rgba(255, 238, 182, 0.11), transparent 22%);
+  opacity: .92;
+}
+
+body.camp-light::after {
+  background-image:
+    linear-gradient(rgba(255, 214, 104, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 214, 104, 0.05) 1px, transparent 1px);
+  opacity: .42;
+}
+
+body.camp-dark {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(109, 76, 255, 0.22), transparent 25%),
+    radial-gradient(circle at 82% 22%, rgba(180, 94, 255, 0.16), transparent 28%),
+    radial-gradient(circle at 52% 72%, rgba(66, 195, 255, 0.07), transparent 22%),
+    linear-gradient(135deg, #030716, #0a1230 44%, #21103c);
+}
+
+body.camp-dark::before {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(128, 95, 255, 0.24), transparent 24%),
+    radial-gradient(circle at 78% 36%, rgba(183, 92, 255, 0.18), transparent 24%),
+    radial-gradient(circle at 50% 76%, rgba(55, 198, 255, 0.07), transparent 20%);
+  opacity: .92;
+}
+
+body.camp-dark::after {
+  background-image:
+    linear-gradient(rgba(164, 111, 255, 0.052) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(164, 111, 255, 0.052) 1px, transparent 1px);
+  opacity: .46;
+}
 button { font: inherit; }
 .space-noise {
   position: fixed; inset: 0; pointer-events: none;
@@ -70,17 +144,55 @@ button { font: inherit; }
   font-weight: 800;
 }
 .change-camp-button {
+  position: relative;
+  overflow: hidden;
   padding: 15px 18px;
   font-size: 20px;
-  font-weight: 800;
-  color: #dbe7ff;
+  font-weight: 900;
+  color: #f2f6ff;
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  letter-spacing: .04em;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color .2s ease;
+}
+.change-camp-button::before,
+.change-camp-button::after {
+  content: "";
+  position: absolute;
+  inset: -38% -20%;
+  pointer-events: none;
+  opacity: .72;
+  transform: translateX(-72%) rotate(13deg);
+}
+.change-camp-button::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 205, 84, .14), rgba(255, 237, 179, .42), rgba(255, 168, 52, .14), transparent);
+  animation: campButtonSweepGold 3.2s ease-in-out infinite;
+}
+.change-camp-button::after {
+  background: linear-gradient(90deg, transparent, rgba(121, 91, 255, .12), rgba(198, 139, 255, .34), rgba(74, 200, 255, .12), transparent);
+  animation: campButtonSweepPurple 3.2s ease-in-out infinite 1.6s;
 }
 .change-camp-button:hover {
   transform: translateY(-2px);
-  border-color: rgba(126, 181, 255, 0.35);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  border-color: rgba(255, 216, 113, 0.35);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28), 0 0 22px rgba(255, 199, 79, .10), 0 0 24px rgba(146, 96, 255, .10);
+}
+body.camp-light .change-camp-button {
+  border-color: rgba(255, 215, 103, .28);
+  box-shadow: var(--shadow), 0 0 20px rgba(255, 200, 71, .10);
+}
+body.camp-dark .change-camp-button {
+  border-color: rgba(169, 112, 255, .28);
+  box-shadow: var(--shadow), 0 0 20px rgba(147, 89, 255, .12);
+}
+@keyframes campButtonSweepGold {
+  0%, 38% { transform: translateX(-74%) rotate(13deg); opacity: 0; }
+  52% { opacity: .82; }
+  72%, 100% { transform: translateX(74%) rotate(13deg); opacity: 0; }
+}
+@keyframes campButtonSweepPurple {
+  0%, 38% { transform: translateX(-74%) rotate(-13deg); opacity: 0; }
+  52% { opacity: .74; }
+  72%, 100% { transform: translateX(74%) rotate(-13deg); opacity: 0; }
 }
 .selection-summary {
   position: fixed;
@@ -101,6 +213,26 @@ button { font: inherit; }
   padding: 16px 22px;
 }
 .selection-summary p { margin: 0; color: var(--muted); font-weight: 800; font-size: 20px; }
+.summary-value {
+  font-weight: 950;
+  transition: color .28s ease, text-shadow .28s ease;
+}
+.summary-value.camp-value-light {
+  color: #ffd66b;
+  text-shadow: 0 0 14px rgba(255, 213, 96, .28), 0 0 26px rgba(255, 159, 48, .14);
+}
+.summary-value.camp-value-dark {
+  color: #c49cff;
+  text-shadow: 0 0 14px rgba(178, 113, 255, .32), 0 0 26px rgba(92, 102, 255, .14);
+}
+body.camp-light .selection-summary-inner {
+  border-color: rgba(255, 214, 108, .24);
+  box-shadow: var(--shadow), 0 0 22px rgba(255, 190, 80, .08);
+}
+body.camp-dark .selection-summary-inner {
+  border-color: rgba(176, 118, 255, .24);
+  box-shadow: var(--shadow), 0 0 22px rgba(150, 92, 255, .10);
+}
 .board-section {
   position: relative;
   padding-top: 64px;
@@ -189,14 +321,23 @@ button { font: inherit; }
 .card-subtitle { margin: 6px 0 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
 .card-image-shell {
   width: 100%;
+  height: 380px;
   border: 1px solid rgba(146, 177, 255, 0.16);
   border-radius: 28px;
   overflow: hidden;
-  background: rgba(8, 13, 28, 0.92);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(120, 162, 255, .12), transparent 32%),
+    linear-gradient(180deg, rgba(8, 13, 28, 0.94), rgba(5, 9, 22, .98));
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+  display: grid;
+  place-items: center;
 }
 .card-image-shell img {
-  display: block; width: 100%; height: 300px; object-fit: cover;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
 }
 .skill-pill-group {
   position: relative; z-index: 1; display: grid; gap: 16px; margin-top: 20px;
@@ -332,6 +473,22 @@ button { font: inherit; }
   box-shadow: 0 16px 36px rgba(0,0,0,0.34);
   font-weight: 700;
 }
+
+body.camp-light .pick-hint {
+  border-color: rgba(255, 217, 110, .32);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3), 0 0 22px rgba(255, 201, 76, .12);
+}
+body.camp-dark .pick-hint {
+  border-color: rgba(174, 118, 255, .32);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3), 0 0 22px rgba(161, 98, 255, .12);
+}
+body.camp-light .character-card::before {
+  background: radial-gradient(circle at 50% 10%, rgba(255, 216, 101, 0.16), transparent 30%);
+}
+body.camp-dark .character-card::before {
+  background: radial-gradient(circle at 50% 10%, rgba(159, 96, 255, 0.18), transparent 30%);
+}
+
 @media (max-width: 1200px) {
   .card-board { grid-template-columns: 1fr; }
   .character-card { min-height: auto; }
@@ -341,7 +498,7 @@ button { font: inherit; }
   .character-topbar { grid-template-columns: 1fr; display: grid; }
   .player-panel, .selection-summary, .complete-button { width: 100%; }
   .camp-option-row { grid-template-columns: 1fr; }
-  .card-image-shell img { height: 300px; }
+  .card-image-shell { height: 340px; }
 }
 
 .page-actions {
@@ -445,10 +602,846 @@ button { font: inherit; }
   .card-board, .page-actions { width: min(100%, calc(100vw - 32px)); }
   .card-board { grid-template-columns: repeat(2, minmax(300px, 420px)); }
 }
+
+/* ===== Dynamic starfield polish v6 ===== */
+.camp-background::before,
+.camp-background::after {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+.camp-bg-stars,
+.camp-bg-constellation {
+  overflow: hidden;
+}
+.camp-bg-stars::before,
+.camp-bg-stars::after,
+.camp-bg-constellation::before,
+.camp-bg-constellation::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.camp-bg-stars {
+  animation: starTwinkle 7s ease-in-out infinite alternate, starFieldFloat 22s ease-in-out infinite alternate;
+}
+.camp-bg-stars::before {
+  background-image:
+    radial-gradient(circle at 8% 18%, rgba(255,255,255,.95) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 20% 54%, rgba(255,255,255,.86) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 38% 24%, rgba(255,255,255,.92) 0 1.2px, transparent 1.9px),
+    radial-gradient(circle at 56% 62%, rgba(255,255,255,.8) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 74% 28%, rgba(255,255,255,.88) 0 1.2px, transparent 1.9px),
+    radial-gradient(circle at 86% 76%, rgba(255,255,255,.84) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 94% 14%, rgba(255,255,255,.78) 0 1px, transparent 1.6px);
+  opacity: .52;
+  animation: starTwinkleFast 4.6s ease-in-out infinite alternate, starLayerDriftA 26s linear infinite;
+}
+.camp-bg-stars::after {
+  background-image:
+    radial-gradient(circle at 12% 76%, rgba(255,255,255,.8) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 28% 18%, rgba(255,255,255,.74) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 48% 48%, rgba(255,255,255,.95) 0 1.3px, transparent 2px),
+    radial-gradient(circle at 68% 84%, rgba(255,255,255,.82) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 82% 40%, rgba(255,255,255,.9) 0 1.2px, transparent 1.9px),
+    radial-gradient(circle at 92% 60%, rgba(255,255,255,.76) 0 1px, transparent 1.6px);
+  opacity: .42;
+  animation: starTwinkleFast 5.2s ease-in-out infinite alternate-reverse, starLayerDriftB 34s linear infinite;
+}
+.camp-bg-constellation {
+  animation: constellationFloat 16s ease-in-out infinite alternate;
+}
+.camp-bg-constellation::before {
+  background: inherit;
+  background-repeat: inherit;
+  background-size: inherit;
+  background-position: inherit;
+  filter: blur(10px);
+  opacity: .28;
+  animation: constellationPulse 4.8s ease-in-out infinite;
+}
+.camp-bg-constellation::after {
+  background:
+    radial-gradient(circle at 18% 26%, rgba(255,255,255,.35), transparent 18%),
+    radial-gradient(circle at 76% 62%, rgba(255,255,255,.26), transparent 18%);
+  opacity: .18;
+  animation: constellationPulse 6.2s ease-in-out infinite reverse;
+}
+body.camp-light .camp-background::before {
+  background:
+    linear-gradient(132deg, transparent 40%, rgba(255, 235, 188, .78) 48%, rgba(255, 205, 107, .18) 52%, transparent 58%);
+  animation: shootingLightA 8.5s linear infinite;
+  opacity: .5;
+}
+body.camp-light .camp-background::after {
+  background:
+    linear-gradient(138deg, transparent 44%, rgba(255, 245, 217, .62) 49%, rgba(255, 171, 56, .16) 52%, transparent 58%);
+  animation: shootingLightB 10.5s linear infinite 2.2s;
+  opacity: .42;
+}
+body.camp-dark .camp-background::before {
+  background:
+    linear-gradient(132deg, transparent 40%, rgba(224, 201, 255, .74) 48%, rgba(120, 110, 255, .18) 52%, transparent 58%);
+  animation: shootingDarkA 8.8s linear infinite;
+  opacity: .52;
+}
+body.camp-dark .camp-background::after {
+  background:
+    linear-gradient(138deg, transparent 44%, rgba(206, 229, 255, .54) 49%, rgba(168, 110, 255, .18) 52%, transparent 58%);
+  animation: shootingDarkB 11s linear infinite 2.8s;
+  opacity: .42;
+}
+@keyframes starFieldFloat {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(.8%, -1.1%, 0) scale(1.01); }
+  100% { transform: translate3d(-.8%, 1.2%, 0) scale(1.02); }
+}
+@keyframes starLayerDriftA {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(1.8%, -1.4%, 0); }
+}
+@keyframes starLayerDriftB {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-2.1%, 1.6%, 0); }
+}
+@keyframes starTwinkleFast {
+  0% { opacity: .22; }
+  50% { opacity: .7; }
+  100% { opacity: .36; }
+}
+@keyframes constellationFloat {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-0.8%, 0.8%, 0); }
+  100% { transform: translate3d(1%, -1%, 0); }
+}
+@keyframes constellationPulse {
+  0%, 100% { opacity: .16; }
+  50% { opacity: .38; }
+}
+@keyframes shootingLightA {
+  0%, 72%, 100% { transform: translate3d(-35%, -28%, 0) rotate(-6deg); opacity: 0; }
+  8%, 18% { opacity: .55; }
+  24% { transform: translate3d(18%, 14%, 0) rotate(-6deg); opacity: 0; }
+}
+@keyframes shootingLightB {
+  0%, 74%, 100% { transform: translate3d(26%, -34%, 0) rotate(-9deg); opacity: 0; }
+  10%, 18% { opacity: .44; }
+  26% { transform: translate3d(-12%, 16%, 0) rotate(-9deg); opacity: 0; }
+}
+@keyframes shootingDarkA {
+  0%, 72%, 100% { transform: translate3d(-34%, -30%, 0) rotate(-6deg); opacity: 0; }
+  8%, 18% { opacity: .56; }
+  24% { transform: translate3d(20%, 16%, 0) rotate(-6deg); opacity: 0; }
+}
+@keyframes shootingDarkB {
+  0%, 76%, 100% { transform: translate3d(24%, -34%, 0) rotate(-10deg); opacity: 0; }
+  10%, 18% { opacity: .42; }
+  26% { transform: translate3d(-14%, 18%, 0) rotate(-10deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .camp-background::before,
+  .camp-background::after,
+  .camp-bg-nebula,
+  .camp-bg-rays,
+  .camp-bg-stars,
+  .camp-bg-stars::before,
+  .camp-bg-stars::after,
+  .camp-bg-constellation,
+  .camp-bg-constellation::before,
+  .camp-bg-constellation::after {
+    animation: none !important;
+  }
+}
+
 @media (max-width: 900px) {
   .character-topbar { grid-template-columns: 1fr; }
   .card-board { grid-template-columns: 1fr; gap: 28px; }
   .page-actions { justify-content: center; }
   .pick-hint { position: static; transform: none; display: inline-flex; margin: 0 auto 20px; }
   .board-section { padding-top: 0; text-align: center; }
+}
+
+
+/* ===== Full-page cosmic camp background polish v2 ===== */
+html, body {
+  min-height: 100%;
+}
+body {
+  min-height: 100vh;
+  isolation: isolate;
+}
+body::before,
+body::after {
+  opacity: 0;
+}
+.camp-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.camp-bg-layer {
+  position: absolute;
+  inset: -8%;
+  pointer-events: none;
+  transition: opacity .45s ease, filter .45s ease, transform .6s ease, background .45s ease;
+}
+.camp-bg-base {
+  inset: 0;
+  background:
+    linear-gradient(115deg, #020816 0%, #07122a 28%, #0a1130 48%, #140f31 70%, #1a0f38 100%);
+}
+.camp-bg-nebula {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(71, 179, 255, .22), transparent 22%),
+    radial-gradient(circle at 34% 76%, rgba(47, 123, 255, .18), transparent 24%),
+    radial-gradient(circle at 58% 48%, rgba(153, 113, 255, .16), transparent 24%),
+    radial-gradient(circle at 86% 22%, rgba(175, 110, 255, .16), transparent 24%),
+    radial-gradient(circle at 84% 80%, rgba(54, 199, 255, .12), transparent 20%);
+  filter: blur(26px) saturate(120%);
+  opacity: .92;
+  animation: cosmicNebulaDrift 18s ease-in-out infinite alternate;
+}
+.camp-bg-rays {
+  background:
+    linear-gradient(110deg, transparent 0%, rgba(255,255,255,.03) 18%, transparent 32%),
+    linear-gradient(82deg, transparent 0%, rgba(126, 205, 255, .055) 16%, transparent 30%),
+    linear-gradient(128deg, transparent 0%, rgba(137, 117, 255, .06) 18%, transparent 34%);
+  mix-blend-mode: screen;
+  opacity: .56;
+  animation: cosmicRaySweep 14s linear infinite;
+}
+.camp-bg-stars {
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 6% 10%, rgba(255,255,255,.95) 0 1.2px, transparent 1.7px),
+    radial-gradient(circle at 12% 30%, rgba(255,255,255,.8) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 18% 65%, rgba(255,255,255,.7) 0 1.1px, transparent 1.8px),
+    radial-gradient(circle at 24% 14%, rgba(255,255,255,.85) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 30% 82%, rgba(255,255,255,.78) 0 1.1px, transparent 1.8px),
+    radial-gradient(circle at 36% 42%, rgba(255,255,255,.86) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 44% 16%, rgba(255,255,255,.75) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 52% 70%, rgba(255,255,255,.82) 0 1.1px, transparent 1.8px),
+    radial-gradient(circle at 58% 34%, rgba(255,255,255,.86) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 64% 88%, rgba(255,255,255,.72) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 72% 18%, rgba(255,255,255,.88) 0 1.15px, transparent 1.9px),
+    radial-gradient(circle at 78% 50%, rgba(255,255,255,.82) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 84% 10%, rgba(255,255,255,.9) 0 1.1px, transparent 1.8px),
+    radial-gradient(circle at 88% 72%, rgba(255,255,255,.74) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 94% 30%, rgba(255,255,255,.84) 0 1.1px, transparent 1.9px);
+  opacity: .72;
+  animation: starTwinkle 7s ease-in-out infinite alternate;
+}
+.camp-bg-constellation {
+  inset: 0;
+  background-repeat: no-repeat, no-repeat;
+  background-size: 38% 34%, 34% 30%;
+  background-position: 7% 18%, 68% 56%;
+  opacity: .34;
+  filter: drop-shadow(0 0 12px rgba(255,255,255,.08));
+}
+.space-noise {
+  z-index: 0;
+  opacity: .35;
+}
+body.camp-light .camp-bg-base {
+  background:
+    linear-gradient(118deg, #071125 0%, #0b1831 22%, #15203e 42%, #2c1e12 70%, #4a2808 100%);
+}
+body.camp-light .camp-bg-nebula {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(255, 223, 132, .42), transparent 25%),
+    radial-gradient(circle at 22% 72%, rgba(255, 183, 80, .22), transparent 24%),
+    radial-gradient(circle at 46% 46%, rgba(255, 236, 175, .14), transparent 18%),
+    radial-gradient(circle at 74% 26%, rgba(255, 177, 68, .22), transparent 23%),
+    radial-gradient(circle at 86% 78%, rgba(255, 225, 145, .16), transparent 22%),
+    radial-gradient(circle at 58% 82%, rgba(255, 144, 39, .12), transparent 16%);
+  filter: blur(24px) saturate(122%);
+  opacity: .98;
+}
+body.camp-light .camp-bg-rays {
+  background:
+    linear-gradient(106deg, transparent 0%, rgba(255, 235, 175, .12) 16%, transparent 31%),
+    linear-gradient(78deg, transparent 0%, rgba(255, 192, 76, .10) 14%, transparent 28%),
+    linear-gradient(128deg, transparent 0%, rgba(255, 146, 35, .08) 16%, transparent 29%),
+    radial-gradient(circle at 24% 46%, rgba(255, 245, 205, .13), transparent 24%);
+  opacity: .84;
+}
+body.camp-light .camp-bg-stars {
+  filter: drop-shadow(0 0 6px rgba(255, 228, 152, .32));
+  opacity: .84;
+}
+body.camp-light .camp-bg-constellation {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 320'%3E%3Cg fill='none' stroke='%23ffd67a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' opacity='0.95'%3E%3Cpath d='M38 68 L108 40 L168 94 L216 58 L290 112 L350 82'/%3E%3Cpath d='M122 194 L172 162 L244 202 L302 150 L372 190'/%3E%3C/g%3E%3Cg fill='%23fff0c1'%3E%3Ccircle cx='38' cy='68' r='4'/%3E%3Ccircle cx='108' cy='40' r='4.5'/%3E%3Ccircle cx='168' cy='94' r='4'/%3E%3Ccircle cx='216' cy='58' r='4'/%3E%3Ccircle cx='290' cy='112' r='4.5'/%3E%3Ccircle cx='350' cy='82' r='4'/%3E%3Ccircle cx='122' cy='194' r='4'/%3E%3Ccircle cx='172' cy='162' r='4.5'/%3E%3Ccircle cx='244' cy='202' r='4'/%3E%3Ccircle cx='302' cy='150' r='4.5'/%3E%3Ccircle cx='372' cy='190' r='4'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 320'%3E%3Cg fill='none' stroke='%23ffb654' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' opacity='0.92'%3E%3Cpath d='M54 102 L126 62 L182 98 L232 54 L284 92 L360 54'/%3E%3Cpath d='M102 230 L170 194 L216 230 L276 170 L328 210'/%3E%3C/g%3E%3Cg fill='%23ffe6a6'%3E%3Ccircle cx='54' cy='102' r='4'/%3E%3Ccircle cx='126' cy='62' r='4.5'/%3E%3Ccircle cx='182' cy='98' r='4'/%3E%3Ccircle cx='232' cy='54' r='4'/%3E%3Ccircle cx='284' cy='92' r='4.5'/%3E%3Ccircle cx='360' cy='54' r='4'/%3E%3Ccircle cx='102' cy='230' r='4'/%3E%3Ccircle cx='170' cy='194' r='4.5'/%3E%3Ccircle cx='216' cy='230' r='4'/%3E%3Ccircle cx='276' cy='170' r='4.5'/%3E%3Ccircle cx='328' cy='210' r='4'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: .46;
+}
+body.camp-dark .camp-bg-base {
+  background:
+    linear-gradient(118deg, #030816 0%, #07112a 24%, #0f1536 46%, #1d103a 70%, #29104d 100%);
+}
+body.camp-dark .camp-bg-nebula {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(111, 88, 255, .36), transparent 25%),
+    radial-gradient(circle at 24% 76%, rgba(57, 102, 255, .18), transparent 20%),
+    radial-gradient(circle at 46% 46%, rgba(193, 136, 255, .14), transparent 18%),
+    radial-gradient(circle at 72% 24%, rgba(176, 98, 255, .28), transparent 24%),
+    radial-gradient(circle at 84% 74%, rgba(117, 220, 255, .12), transparent 20%),
+    radial-gradient(circle at 58% 82%, rgba(97, 56, 212, .18), transparent 18%);
+  filter: blur(28px) saturate(128%);
+  opacity: .98;
+}
+body.camp-dark .camp-bg-rays {
+  background:
+    linear-gradient(110deg, transparent 0%, rgba(182, 125, 255, .12) 16%, transparent 31%),
+    linear-gradient(80deg, transparent 0%, rgba(91, 187, 255, .08) 14%, transparent 28%),
+    linear-gradient(132deg, transparent 0%, rgba(121, 92, 255, .12) 16%, transparent 29%),
+    radial-gradient(circle at 26% 46%, rgba(223, 188, 255, .08), transparent 24%);
+  opacity: .82;
+}
+body.camp-dark .camp-bg-stars {
+  filter: drop-shadow(0 0 6px rgba(182, 134, 255, .28));
+  opacity: .82;
+}
+body.camp-dark .camp-bg-constellation {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 320'%3E%3Cg fill='none' stroke='%23b88dff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' opacity='0.95'%3E%3Cpath d='M44 78 L116 42 L166 98 L224 68 L286 112 L350 78'/%3E%3Cpath d='M132 206 L184 170 L248 214 L308 160 L372 196'/%3E%3C/g%3E%3Cg fill='%23edd8ff'%3E%3Ccircle cx='44' cy='78' r='4'/%3E%3Ccircle cx='116' cy='42' r='4.5'/%3E%3Ccircle cx='166' cy='98' r='4'/%3E%3Ccircle cx='224' cy='68' r='4'/%3E%3Ccircle cx='286' cy='112' r='4.5'/%3E%3Ccircle cx='350' cy='78' r='4'/%3E%3Ccircle cx='132' cy='206' r='4'/%3E%3Ccircle cx='184' cy='170' r='4.5'/%3E%3Ccircle cx='248' cy='214' r='4'/%3E%3Ccircle cx='308' cy='160' r='4.5'/%3E%3Ccircle cx='372' cy='196' r='4'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 320'%3E%3Cg fill='none' stroke='%237d70ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' opacity='0.92'%3E%3Cpath d='M56 112 L126 68 L184 108 L238 64 L302 104 L366 70'/%3E%3Cpath d='M94 236 L160 198 L216 236 L280 182 L340 218'/%3E%3C/g%3E%3Cg fill='%23d5e5ff'%3E%3Ccircle cx='56' cy='112' r='4'/%3E%3Ccircle cx='126' cy='68' r='4.5'/%3E%3Ccircle cx='184' cy='108' r='4'/%3E%3Ccircle cx='238' cy='64' r='4'/%3E%3Ccircle cx='302' cy='104' r='4.5'/%3E%3Ccircle cx='366' cy='70' r='4'/%3E%3Ccircle cx='94' cy='236' r='4'/%3E%3Ccircle cx='160' cy='198' r='4.5'/%3E%3Ccircle cx='216' cy='236' r='4'/%3E%3Ccircle cx='280' cy='182' r='4.5'/%3E%3Ccircle cx='340' cy='218' r='4'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: .44;
+}
+@keyframes cosmicNebulaDrift {
+  0% { transform: scale(1) translate3d(0, 0, 0); }
+  50% { transform: scale(1.04) translate3d(-1.2%, 1.4%, 0); }
+  100% { transform: scale(1.08) translate3d(1.6%, -1.6%, 0); }
+}
+@keyframes cosmicRaySweep {
+  0% { transform: translateX(-2%) translateY(0); }
+  50% { transform: translateX(2%) translateY(-1.6%); }
+  100% { transform: translateX(-2%) translateY(0); }
+}
+@keyframes starTwinkle {
+  0% { opacity: .56; }
+  50% { opacity: .84; }
+  100% { opacity: .66; }
+}
+
+/* ===== Dynamic starfield polish v6 ===== */
+.camp-background::before,
+.camp-background::after {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+.camp-bg-stars,
+.camp-bg-constellation {
+  overflow: hidden;
+}
+.camp-bg-stars::before,
+.camp-bg-stars::after,
+.camp-bg-constellation::before,
+.camp-bg-constellation::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.camp-bg-stars {
+  animation: starTwinkle 7s ease-in-out infinite alternate, starFieldFloat 22s ease-in-out infinite alternate;
+}
+.camp-bg-stars::before {
+  background-image:
+    radial-gradient(circle at 8% 18%, rgba(255,255,255,.95) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 20% 54%, rgba(255,255,255,.86) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 38% 24%, rgba(255,255,255,.92) 0 1.2px, transparent 1.9px),
+    radial-gradient(circle at 56% 62%, rgba(255,255,255,.8) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 74% 28%, rgba(255,255,255,.88) 0 1.2px, transparent 1.9px),
+    radial-gradient(circle at 86% 76%, rgba(255,255,255,.84) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 94% 14%, rgba(255,255,255,.78) 0 1px, transparent 1.6px);
+  opacity: .52;
+  animation: starTwinkleFast 4.6s ease-in-out infinite alternate, starLayerDriftA 26s linear infinite;
+}
+.camp-bg-stars::after {
+  background-image:
+    radial-gradient(circle at 12% 76%, rgba(255,255,255,.8) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 28% 18%, rgba(255,255,255,.74) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 48% 48%, rgba(255,255,255,.95) 0 1.3px, transparent 2px),
+    radial-gradient(circle at 68% 84%, rgba(255,255,255,.82) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 82% 40%, rgba(255,255,255,.9) 0 1.2px, transparent 1.9px),
+    radial-gradient(circle at 92% 60%, rgba(255,255,255,.76) 0 1px, transparent 1.6px);
+  opacity: .42;
+  animation: starTwinkleFast 5.2s ease-in-out infinite alternate-reverse, starLayerDriftB 34s linear infinite;
+}
+.camp-bg-constellation {
+  animation: constellationFloat 16s ease-in-out infinite alternate;
+}
+.camp-bg-constellation::before {
+  background: inherit;
+  background-repeat: inherit;
+  background-size: inherit;
+  background-position: inherit;
+  filter: blur(10px);
+  opacity: .28;
+  animation: constellationPulse 4.8s ease-in-out infinite;
+}
+.camp-bg-constellation::after {
+  background:
+    radial-gradient(circle at 18% 26%, rgba(255,255,255,.35), transparent 18%),
+    radial-gradient(circle at 76% 62%, rgba(255,255,255,.26), transparent 18%);
+  opacity: .18;
+  animation: constellationPulse 6.2s ease-in-out infinite reverse;
+}
+body.camp-light .camp-background::before {
+  background:
+    linear-gradient(132deg, transparent 40%, rgba(255, 235, 188, .78) 48%, rgba(255, 205, 107, .18) 52%, transparent 58%);
+  animation: shootingLightA 8.5s linear infinite;
+  opacity: .5;
+}
+body.camp-light .camp-background::after {
+  background:
+    linear-gradient(138deg, transparent 44%, rgba(255, 245, 217, .62) 49%, rgba(255, 171, 56, .16) 52%, transparent 58%);
+  animation: shootingLightB 10.5s linear infinite 2.2s;
+  opacity: .42;
+}
+body.camp-dark .camp-background::before {
+  background:
+    linear-gradient(132deg, transparent 40%, rgba(224, 201, 255, .74) 48%, rgba(120, 110, 255, .18) 52%, transparent 58%);
+  animation: shootingDarkA 8.8s linear infinite;
+  opacity: .52;
+}
+body.camp-dark .camp-background::after {
+  background:
+    linear-gradient(138deg, transparent 44%, rgba(206, 229, 255, .54) 49%, rgba(168, 110, 255, .18) 52%, transparent 58%);
+  animation: shootingDarkB 11s linear infinite 2.8s;
+  opacity: .42;
+}
+@keyframes starFieldFloat {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(.8%, -1.1%, 0) scale(1.01); }
+  100% { transform: translate3d(-.8%, 1.2%, 0) scale(1.02); }
+}
+@keyframes starLayerDriftA {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(1.8%, -1.4%, 0); }
+}
+@keyframes starLayerDriftB {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-2.1%, 1.6%, 0); }
+}
+@keyframes starTwinkleFast {
+  0% { opacity: .22; }
+  50% { opacity: .7; }
+  100% { opacity: .36; }
+}
+@keyframes constellationFloat {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-0.8%, 0.8%, 0); }
+  100% { transform: translate3d(1%, -1%, 0); }
+}
+@keyframes constellationPulse {
+  0%, 100% { opacity: .16; }
+  50% { opacity: .38; }
+}
+@keyframes shootingLightA {
+  0%, 72%, 100% { transform: translate3d(-35%, -28%, 0) rotate(-6deg); opacity: 0; }
+  8%, 18% { opacity: .55; }
+  24% { transform: translate3d(18%, 14%, 0) rotate(-6deg); opacity: 0; }
+}
+@keyframes shootingLightB {
+  0%, 74%, 100% { transform: translate3d(26%, -34%, 0) rotate(-9deg); opacity: 0; }
+  10%, 18% { opacity: .44; }
+  26% { transform: translate3d(-12%, 16%, 0) rotate(-9deg); opacity: 0; }
+}
+@keyframes shootingDarkA {
+  0%, 72%, 100% { transform: translate3d(-34%, -30%, 0) rotate(-6deg); opacity: 0; }
+  8%, 18% { opacity: .56; }
+  24% { transform: translate3d(20%, 16%, 0) rotate(-6deg); opacity: 0; }
+}
+@keyframes shootingDarkB {
+  0%, 76%, 100% { transform: translate3d(24%, -34%, 0) rotate(-10deg); opacity: 0; }
+  10%, 18% { opacity: .42; }
+  26% { transform: translate3d(-14%, 18%, 0) rotate(-10deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .camp-background::before,
+  .camp-background::after,
+  .camp-bg-nebula,
+  .camp-bg-rays,
+  .camp-bg-stars,
+  .camp-bg-stars::before,
+  .camp-bg-stars::after,
+  .camp-bg-constellation,
+  .camp-bg-constellation::before,
+  .camp-bg-constellation::after {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .camp-bg-constellation {
+    background-size: 62% 26%, 56% 22%;
+    background-position: 0% 16%, 50% 72%;
+  }
+  .camp-bg-nebula,
+  .camp-bg-rays {
+    inset: -15%;
+  }
+}
+
+/* ===== Character full-body hover 3D card polish v3 ===== */
+.card-board {
+  align-items: start;
+}
+.character-card {
+  overflow: visible;
+  transform-style: preserve-3d;
+  will-change: transform;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --pointer-x: 50%;
+  --pointer-y: 16%;
+  --body-shift-x: 0px;
+  --body-shift-y: 0px;
+}
+.character-card::before {
+  z-index: 0;
+}
+.character-card:hover,
+.character-card.is-hovered,
+.character-card:focus-within {
+  z-index: 8;
+  transform: perspective(1400px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-10px);
+}
+.card-name-block,
+.skill-pill-group,
+.card-selected-badge {
+  position: relative;
+  z-index: 3;
+}
+.card-visual-stage {
+  position: relative;
+  z-index: 2;
+  margin-top: 8px;
+  padding-top: 36px;
+  overflow: visible;
+  isolation: isolate;
+}
+.card-hover-shine {
+  position: absolute;
+  inset: 18px 10px 0;
+  border-radius: 30px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(255,255,255,.18), transparent 34%),
+    linear-gradient(140deg, rgba(255,255,255,.09), transparent 34%, transparent 72%, rgba(255,255,255,.04));
+  mix-blend-mode: screen;
+  opacity: 0;
+  transform: translateZ(26px);
+  transition: opacity .24s ease;
+}
+.character-card:hover .card-hover-shine,
+.character-card.is-hovered .card-hover-shine,
+.character-card:focus-within .card-hover-shine {
+  opacity: .95;
+}
+.card-image-shell {
+  position: relative;
+  z-index: 1;
+  transition: transform .28s ease, filter .28s ease, box-shadow .28s ease;
+}
+.character-card:hover .card-image-shell,
+.character-card.is-hovered .card-image-shell,
+.character-card:focus-within .card-image-shell {
+  transform: translateZ(12px) scale(.985);
+  filter: brightness(.72) saturate(.9);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 20px 34px rgba(0,0,0,.26);
+}
+.character-card {
+  --body-width: min(88%, 350px);
+  --body-scale-base: .88;
+  --body-scale-hover: 1.02;
+}
+.character-card[data-character-id="assassin"] {
+  --body-width: min(108%, 430px);
+  --body-scale-base: 1.02;
+  --body-scale-hover: 1.2;
+}
+.card-fullbody-wrap {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  width: var(--body-width);
+  transform: translate3d(calc(-50% + var(--body-shift-x)), calc(40px + var(--body-shift-y)), 54px) scale(var(--body-scale-base));
+  transform-origin: center bottom;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+  transition: opacity .28s ease, transform .34s cubic-bezier(.2, .8, .2, 1), filter .34s ease;
+  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, .34));
+}
+.card-fullbody-aura {
+  position: absolute;
+  left: 50%;
+  bottom: 7%;
+  width: 72%;
+  height: 24%;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(89, 169, 255, .32) 0%, rgba(89, 169, 255, .12) 44%, transparent 74%);
+  filter: blur(16px);
+  opacity: .68;
+}
+body.camp-light .card-fullbody-aura {
+  background: radial-gradient(circle, rgba(255, 214, 90, .42) 0%, rgba(255, 155, 49, .14) 44%, transparent 76%);
+}
+body.camp-dark .card-fullbody-aura {
+  background: radial-gradient(circle, rgba(167, 105, 255, .42) 0%, rgba(88, 143, 255, .14) 44%, transparent 76%);
+}
+.card-fullbody {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.character-card:hover .card-fullbody-wrap,
+.character-card.is-hovered .card-fullbody-wrap,
+.character-card:focus-within .card-fullbody-wrap {
+  opacity: 1;
+  transform: translate3d(calc(-50% + var(--body-shift-x)), calc(-56px + var(--body-shift-y)), 110px) scale(var(--body-scale-hover));
+  filter: drop-shadow(0 24px 36px rgba(0, 0, 0, .4));
+}
+body.camp-light .character-card:hover .card-fullbody-wrap,
+body.camp-light .character-card.is-hovered .card-fullbody-wrap,
+body.camp-light .character-card:focus-within .card-fullbody-wrap {
+  filter: drop-shadow(0 24px 38px rgba(0, 0, 0, .42)) drop-shadow(0 0 22px rgba(255, 205, 84, .26));
+}
+body.camp-dark .character-card:hover .card-fullbody-wrap,
+body.camp-dark .character-card.is-hovered .card-fullbody-wrap,
+body.camp-dark .character-card:focus-within .card-fullbody-wrap {
+  filter: drop-shadow(0 24px 38px rgba(0, 0, 0, .42)) drop-shadow(0 0 22px rgba(157, 96, 255, .26));
+}
+.character-card.is-selected-light .card-image-shell {
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 0 24px rgba(255, 214, 90, .18);
+}
+.character-card.is-selected-dark .card-image-shell {
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 0 24px rgba(157, 96, 255, .18);
+}
+@media (max-width: 1360px) {
+  .character-card {
+    --body-width: min(82%, 310px);
+  }
+  .character-card[data-character-id="assassin"] {
+    --body-width: min(100%, 380px);
+  }
+}
+
+/* ===== Dynamic starfield polish v6 ===== */
+.camp-background::before,
+.camp-background::after {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+.camp-bg-stars,
+.camp-bg-constellation {
+  overflow: hidden;
+}
+.camp-bg-stars::before,
+.camp-bg-stars::after,
+.camp-bg-constellation::before,
+.camp-bg-constellation::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.camp-bg-stars {
+  animation: starTwinkle 7s ease-in-out infinite alternate, starFieldFloat 22s ease-in-out infinite alternate;
+}
+.camp-bg-stars::before {
+  background-image:
+    radial-gradient(circle at 8% 18%, rgba(255,255,255,.95) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 20% 54%, rgba(255,255,255,.86) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 38% 24%, rgba(255,255,255,.92) 0 1.2px, transparent 1.9px),
+    radial-gradient(circle at 56% 62%, rgba(255,255,255,.8) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 74% 28%, rgba(255,255,255,.88) 0 1.2px, transparent 1.9px),
+    radial-gradient(circle at 86% 76%, rgba(255,255,255,.84) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 94% 14%, rgba(255,255,255,.78) 0 1px, transparent 1.6px);
+  opacity: .52;
+  animation: starTwinkleFast 4.6s ease-in-out infinite alternate, starLayerDriftA 26s linear infinite;
+}
+.camp-bg-stars::after {
+  background-image:
+    radial-gradient(circle at 12% 76%, rgba(255,255,255,.8) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 28% 18%, rgba(255,255,255,.74) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 48% 48%, rgba(255,255,255,.95) 0 1.3px, transparent 2px),
+    radial-gradient(circle at 68% 84%, rgba(255,255,255,.82) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 82% 40%, rgba(255,255,255,.9) 0 1.2px, transparent 1.9px),
+    radial-gradient(circle at 92% 60%, rgba(255,255,255,.76) 0 1px, transparent 1.6px);
+  opacity: .42;
+  animation: starTwinkleFast 5.2s ease-in-out infinite alternate-reverse, starLayerDriftB 34s linear infinite;
+}
+.camp-bg-constellation {
+  animation: constellationFloat 16s ease-in-out infinite alternate;
+}
+.camp-bg-constellation::before {
+  background: inherit;
+  background-repeat: inherit;
+  background-size: inherit;
+  background-position: inherit;
+  filter: blur(10px);
+  opacity: .28;
+  animation: constellationPulse 4.8s ease-in-out infinite;
+}
+.camp-bg-constellation::after {
+  background:
+    radial-gradient(circle at 18% 26%, rgba(255,255,255,.35), transparent 18%),
+    radial-gradient(circle at 76% 62%, rgba(255,255,255,.26), transparent 18%);
+  opacity: .18;
+  animation: constellationPulse 6.2s ease-in-out infinite reverse;
+}
+body.camp-light .camp-background::before {
+  background:
+    linear-gradient(132deg, transparent 40%, rgba(255, 235, 188, .78) 48%, rgba(255, 205, 107, .18) 52%, transparent 58%);
+  animation: shootingLightA 8.5s linear infinite;
+  opacity: .5;
+}
+body.camp-light .camp-background::after {
+  background:
+    linear-gradient(138deg, transparent 44%, rgba(255, 245, 217, .62) 49%, rgba(255, 171, 56, .16) 52%, transparent 58%);
+  animation: shootingLightB 10.5s linear infinite 2.2s;
+  opacity: .42;
+}
+body.camp-dark .camp-background::before {
+  background:
+    linear-gradient(132deg, transparent 40%, rgba(224, 201, 255, .74) 48%, rgba(120, 110, 255, .18) 52%, transparent 58%);
+  animation: shootingDarkA 8.8s linear infinite;
+  opacity: .52;
+}
+body.camp-dark .camp-background::after {
+  background:
+    linear-gradient(138deg, transparent 44%, rgba(206, 229, 255, .54) 49%, rgba(168, 110, 255, .18) 52%, transparent 58%);
+  animation: shootingDarkB 11s linear infinite 2.8s;
+  opacity: .42;
+}
+@keyframes starFieldFloat {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(.8%, -1.1%, 0) scale(1.01); }
+  100% { transform: translate3d(-.8%, 1.2%, 0) scale(1.02); }
+}
+@keyframes starLayerDriftA {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(1.8%, -1.4%, 0); }
+}
+@keyframes starLayerDriftB {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-2.1%, 1.6%, 0); }
+}
+@keyframes starTwinkleFast {
+  0% { opacity: .22; }
+  50% { opacity: .7; }
+  100% { opacity: .36; }
+}
+@keyframes constellationFloat {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-0.8%, 0.8%, 0); }
+  100% { transform: translate3d(1%, -1%, 0); }
+}
+@keyframes constellationPulse {
+  0%, 100% { opacity: .16; }
+  50% { opacity: .38; }
+}
+@keyframes shootingLightA {
+  0%, 72%, 100% { transform: translate3d(-35%, -28%, 0) rotate(-6deg); opacity: 0; }
+  8%, 18% { opacity: .55; }
+  24% { transform: translate3d(18%, 14%, 0) rotate(-6deg); opacity: 0; }
+}
+@keyframes shootingLightB {
+  0%, 74%, 100% { transform: translate3d(26%, -34%, 0) rotate(-9deg); opacity: 0; }
+  10%, 18% { opacity: .44; }
+  26% { transform: translate3d(-12%, 16%, 0) rotate(-9deg); opacity: 0; }
+}
+@keyframes shootingDarkA {
+  0%, 72%, 100% { transform: translate3d(-34%, -30%, 0) rotate(-6deg); opacity: 0; }
+  8%, 18% { opacity: .56; }
+  24% { transform: translate3d(20%, 16%, 0) rotate(-6deg); opacity: 0; }
+}
+@keyframes shootingDarkB {
+  0%, 76%, 100% { transform: translate3d(24%, -34%, 0) rotate(-10deg); opacity: 0; }
+  10%, 18% { opacity: .42; }
+  26% { transform: translate3d(-14%, 18%, 0) rotate(-10deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .camp-background::before,
+  .camp-background::after,
+  .camp-bg-nebula,
+  .camp-bg-rays,
+  .camp-bg-stars,
+  .camp-bg-stars::before,
+  .camp-bg-stars::after,
+  .camp-bg-constellation,
+  .camp-bg-constellation::before,
+  .camp-bg-constellation::after {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .character-card:hover,
+  .character-card.is-hovered,
+  .character-card:focus-within {
+    transform: translateY(-8px);
+  }
+  .card-visual-stage {
+    padding-top: 18px;
+  }
+  .card-fullbody-wrap {
+    display: none;
+  }
+  .card-hover-shine {
+    display: none;
+  }
+  .character-card:hover .card-image-shell,
+  .character-card.is-hovered .card-image-shell,
+  .character-card:focus-within .card-image-shell {
+    filter: none;
+    transform: scale(.99);
+  }
+}
+
+
+/* ===== v7 remove diagonal light / white beam effect ===== */
+.camp-bg-rays {
+  opacity: 0 !important;
+  animation: none !important;
+  background: none !important;
+}
+.camp-background::before,
+.camp-background::after {
+  content: none !important;
+  opacity: 0 !important;
+  animation: none !important;
+  background: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .camp-bg-rays,
+  .camp-background::before,
+  .camp-background::after {
+    animation: none !important;
+  }
 }

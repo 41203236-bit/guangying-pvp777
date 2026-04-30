@@ -52,10 +52,18 @@ body {
 }
 
 .side-panel {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   padding: 30px 24px 24px;
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 64px);
+}
+
+.side-panel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .center-panel {
@@ -428,6 +436,265 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
+
+
+.panel-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  transition: opacity 260ms ease, filter 260ms ease;
+}
+
+.side-panel[data-camp="light"] .panel-ambient,
+.side-panel[data-camp="dark"] .panel-ambient {
+  opacity: 0.92;
+}
+
+.side-panel[data-camp="none"] .panel-ambient {
+  opacity: 0.3;
+  filter: saturate(0.75);
+}
+
+.panel-ambient > div {
+  position: absolute;
+  inset: 0;
+}
+
+.ambient-nebula {
+  opacity: 0.8;
+  filter: blur(0px);
+  animation: ambientDrift 18s ease-in-out infinite alternate;
+}
+
+.ambient-stars {
+  opacity: 0.75;
+  animation: ambientTwinkle 6.2s ease-in-out infinite alternate;
+}
+
+.ambient-stars-b {
+  opacity: 0.4;
+  animation-duration: 8.8s;
+  animation-direction: alternate-reverse;
+}
+
+.ambient-constellation {
+  opacity: 0.42;
+  animation: ambientConstellation 14s ease-in-out infinite alternate;
+}
+
+.ambient-arc {
+  inset: auto;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  opacity: 0.55;
+}
+
+.ambient-arc-a {
+  top: -26px;
+  left: -84px;
+  animation: ambientRotate 20s linear infinite;
+}
+
+.ambient-arc-b {
+  right: -90px;
+  bottom: -58px;
+  animation: ambientRotateReverse 24s linear infinite;
+}
+
+.ambient-glow {
+  inset: auto;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  filter: blur(42px);
+  opacity: 0.45;
+  animation: ambientGlowPulse 7s ease-in-out infinite;
+}
+
+.ambient-glow-a {
+  top: 54px;
+  left: -42px;
+}
+
+.ambient-glow-b {
+  right: -56px;
+  bottom: 84px;
+  animation-delay: 1.4s;
+}
+
+.player-panel .ambient-stars-a {
+  background-image:
+    radial-gradient(circle at 13% 14%, rgba(255,255,255,.95) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 24% 34%, rgba(255,255,255,.72) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 17% 58%, rgba(255,255,255,.88) 0 1.1px, transparent 1.8px),
+    radial-gradient(circle at 21% 77%, rgba(255,255,255,.78) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 87% 20%, rgba(255,255,255,.65) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 76% 68%, rgba(255,255,255,.58) 0 1px, transparent 1.7px);
+}
+
+.player-panel .ambient-stars-b {
+  background-image:
+    radial-gradient(circle at 9% 44%, rgba(255,255,255,.78) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 26% 22%, rgba(255,255,255,.84) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 14% 88%, rgba(255,255,255,.66) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 82% 38%, rgba(255,255,255,.58) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 92% 72%, rgba(255,255,255,.68) 0 1px, transparent 1.7px);
+}
+
+.enemy-panel .ambient-stars-a {
+  background-image:
+    radial-gradient(circle at 86% 14%, rgba(255,255,255,.95) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 74% 34%, rgba(255,255,255,.74) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 80% 58%, rgba(255,255,255,.9) 0 1.1px, transparent 1.8px),
+    radial-gradient(circle at 76% 77%, rgba(255,255,255,.8) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 14% 20%, rgba(255,255,255,.64) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 28% 68%, rgba(255,255,255,.58) 0 1px, transparent 1.7px);
+}
+
+.enemy-panel .ambient-stars-b {
+  background-image:
+    radial-gradient(circle at 90% 44%, rgba(255,255,255,.8) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 73% 22%, rgba(255,255,255,.84) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 84% 88%, rgba(255,255,255,.66) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 18% 38%, rgba(255,255,255,.56) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 8% 72%, rgba(255,255,255,.66) 0 1px, transparent 1.7px);
+}
+
+.player-panel .ambient-constellation {
+  background:
+    linear-gradient(28deg, transparent 42%, rgba(255,255,255,.18) 43%, rgba(255,255,255,.18) 43.5%, transparent 44%),
+    linear-gradient(74deg, transparent 48%, rgba(255,255,255,.15) 49%, rgba(255,255,255,.15) 49.5%, transparent 50%),
+    linear-gradient(116deg, transparent 56%, rgba(255,255,255,.12) 57%, rgba(255,255,255,.12) 57.4%, transparent 58%);
+}
+
+.enemy-panel .ambient-constellation {
+  background:
+    linear-gradient(-28deg, transparent 42%, rgba(255,255,255,.18) 43%, rgba(255,255,255,.18) 43.5%, transparent 44%),
+    linear-gradient(-74deg, transparent 48%, rgba(255,255,255,.15) 49%, rgba(255,255,255,.15) 49.5%, transparent 50%),
+    linear-gradient(-116deg, transparent 56%, rgba(255,255,255,.12) 57%, rgba(255,255,255,.12) 57.4%, transparent 58%);
+}
+
+.side-panel[data-camp="light"] {
+  border-color: rgba(255, 212, 104, 0.18);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(255, 212, 104, 0.04), inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+
+.side-panel[data-camp="light"] .ambient-nebula {
+  background:
+    radial-gradient(circle at 12% 24%, rgba(255, 211, 112, 0.26), transparent 22%),
+    radial-gradient(circle at 22% 58%, rgba(145, 239, 255, 0.16), transparent 20%),
+    radial-gradient(circle at 76% 82%, rgba(255, 193, 90, 0.14), transparent 26%);
+}
+
+.side-panel[data-camp="light"] .ambient-arc-a,
+.side-panel[data-camp="light"] .ambient-arc-b {
+  border-color: rgba(255, 211, 112, 0.22);
+  box-shadow: inset 0 0 40px rgba(255, 211, 112, 0.04), 0 0 32px rgba(137, 225, 255, 0.08);
+}
+
+.side-panel[data-camp="light"] .ambient-glow-a {
+  background: radial-gradient(circle, rgba(255, 217, 128, 0.42), rgba(255, 217, 128, 0));
+}
+
+.side-panel[data-camp="light"] .ambient-glow-b {
+  background: radial-gradient(circle, rgba(129, 232, 255, 0.3), rgba(129, 232, 255, 0));
+}
+
+.side-panel[data-camp="dark"] {
+  border-color: rgba(172, 122, 255, 0.2);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(172, 122, 255, 0.05), inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+
+.side-panel[data-camp="dark"] .ambient-nebula {
+  background:
+    radial-gradient(circle at 86% 22%, rgba(173, 118, 255, 0.28), transparent 22%),
+    radial-gradient(circle at 78% 62%, rgba(114, 179, 255, 0.16), transparent 20%),
+    radial-gradient(circle at 22% 84%, rgba(156, 112, 255, 0.14), transparent 24%);
+}
+
+.side-panel[data-camp="dark"] .ambient-arc-a,
+.side-panel[data-camp="dark"] .ambient-arc-b {
+  border-color: rgba(175, 124, 255, 0.24);
+  box-shadow: inset 0 0 40px rgba(175, 124, 255, 0.05), 0 0 32px rgba(118, 219, 255, 0.06);
+}
+
+.side-panel[data-camp="dark"] .ambient-glow-a {
+  background: radial-gradient(circle, rgba(188, 146, 255, 0.36), rgba(188, 146, 255, 0));
+}
+
+.side-panel[data-camp="dark"] .ambient-glow-b {
+  background: radial-gradient(circle, rgba(116, 198, 255, 0.28), rgba(116, 198, 255, 0));
+}
+
+.side-panel[data-camp="none"] .ambient-nebula {
+  background:
+    radial-gradient(circle at 18% 22%, rgba(123, 206, 255, 0.12), transparent 20%),
+    radial-gradient(circle at 78% 76%, rgba(168, 126, 255, 0.1), transparent 22%);
+}
+
+.side-panel[data-camp="none"] .ambient-arc-a,
+.side-panel[data-camp="none"] .ambient-arc-b {
+  border-color: rgba(136, 166, 245, 0.12);
+}
+
+.side-panel[data-camp="light"] .panel-header h2,
+.side-panel[data-camp="light"] .skill-card h4 {
+  text-shadow: 0 0 16px rgba(255, 218, 114, 0.12);
+}
+
+.side-panel[data-camp="dark"] .panel-header h2,
+.side-panel[data-camp="dark"] .skill-card h4 {
+  text-shadow: 0 0 16px rgba(195, 160, 255, 0.14);
+}
+
+@keyframes ambientDrift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(1.5%, -1.2%, 0) scale(1.03); }
+  100% { transform: translate3d(-1.2%, 1.4%, 0) scale(1.04); }
+}
+
+@keyframes ambientTwinkle {
+  0% { opacity: 0.26; }
+  50% { opacity: 0.72; }
+  100% { opacity: 0.42; }
+}
+
+@keyframes ambientConstellation {
+  0% { transform: translate3d(0, 0, 0); opacity: 0.22; }
+  50% { transform: translate3d(1.5%, -1%, 0); opacity: 0.42; }
+  100% { transform: translate3d(-1%, 1.2%, 0); opacity: 0.28; }
+}
+
+@keyframes ambientRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ambientRotateReverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes ambientGlowPulse {
+  0%, 100% { transform: scale(0.92); opacity: 0.24; }
+  50% { transform: scale(1.12); opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel-ambient,
+  .ambient-nebula,
+  .ambient-stars,
+  .ambient-constellation,
+  .ambient-arc,
+  .ambient-glow {
+    animation: none !important;
+  }
+}
+
 @media (max-width: 1440px) {
   .room-page {
     grid-template-columns: minmax(280px, 320px) minmax(580px, 1fr) minmax(280px, 320px);
@@ -450,6 +717,9 @@ body {
 }
 
 @media (max-width: 760px) {
+  .panel-ambient { opacity: 0.58; }
+  .ambient-arc { width: 170px; height: 170px; }
+  .ambient-glow { width: 130px; height: 130px; }
   .room-page { padding: 18px 14px; }
   .panel-header h2 { font-size: 30px; }
   .status-player-grid,

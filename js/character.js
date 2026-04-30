@@ -1,7 +1,5 @@
 (function () {
   const storage = window.LightShadowStorage;
-
-
   const audio = window.LightShadowAudio;
   if (audio && audio.init) audio.init('character');
 
@@ -35,15 +33,25 @@
     return characters.find((item) => item.id === characterId);
   }
 
+  function updateCampTheme() {
+    document.body.classList.remove('camp-light', 'camp-dark');
+    if (tempCamp === 'light') document.body.classList.add('camp-light');
+    if (tempCamp === 'dark') document.body.classList.add('camp-dark');
+  }
 
   function updateSummary() {
-    selectedCampText.textContent = tempCamp
-      ? `目前陣營：${tempCamp === 'light' ? '光之陣營' : '暗之陣營'}`
-      : '目前陣營：尚未選擇';
+    updateCampTheme();
+    if (tempCamp) {
+      const campLabel = tempCamp === 'light' ? '光之陣營' : '暗之陣營';
+      const campClass = tempCamp === 'light' ? 'camp-value-light' : 'camp-value-dark';
+      selectedCampText.innerHTML = `目前陣營：<span class="summary-value ${campClass}">${campLabel}</span>`;
+    } else {
+      selectedCampText.textContent = '目前陣營：尚未選擇';
+    }
 
     const selectedCharacter = getCharacterById(tempCharacterId);
-    selectedCharacterText.textContent = selectedCharacter
-      ? `目前角色：${selectedCharacter.name}`
+    selectedCharacterText.innerHTML = selectedCharacter
+      ? `目前角色：<span class="summary-value">${selectedCharacter.name}</span>`
       : '目前角色：尚未選擇';
 
     completeButton.disabled = !(tempCamp && tempCharacterId);
@@ -125,8 +133,15 @@
         <p class="card-title">${character.name}</p>
         <p class="card-subtitle">${character.englishName} · ${character.role}</p>
       </div>
-      <div class="card-image-shell">
-        <img src="${character.image}" alt="${character.name}角色圖">
+      <div class="card-visual-stage">
+        <div class="card-hover-shine" aria-hidden="true"></div>
+        <div class="card-fullbody-wrap" aria-hidden="true">
+          <div class="card-fullbody-aura"></div>
+          <img class="card-fullbody" src="${character.fullBodyImage || character.image}" alt="" loading="lazy">
+        </div>
+        <div class="card-image-shell">
+          <img src="${character.image}" alt="${character.name}角色圖">
+        </div>
       </div>
       <div class="skill-pill-group">
         ${createSkillPanel(character, 'passive', 'passive')}
@@ -134,6 +149,8 @@
         ${createSkillPanel(character, 'ultimate', 'ultimate')}
       </div>
     `;
+
+    attachCardMotion(article);
 
     article.addEventListener('click', function (event) {
       if (event.target.closest('.skill-detail-button')) return;
@@ -155,6 +172,60 @@
     });
 
     return article;
+  }
+
+  function setCardMotion(card, event) {
+    const rect = card.getBoundingClientRect();
+    const ratioX = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+    const ratioY = Math.min(Math.max((event.clientY - rect.top) / rect.height, 0), 1);
+    const tiltY = (ratioX - 0.5) * 10;
+    const tiltX = (0.5 - ratioY) * 8;
+    const bodyShiftX = (ratioX - 0.5) * 24;
+    const bodyShiftY = (ratioY - 0.5) * -18;
+
+    card.style.setProperty('--tilt-x', `${tiltX.toFixed(2)}deg`);
+    card.style.setProperty('--tilt-y', `${tiltY.toFixed(2)}deg`);
+    card.style.setProperty('--pointer-x', `${(ratioX * 100).toFixed(2)}%`);
+    card.style.setProperty('--pointer-y', `${(ratioY * 100).toFixed(2)}%`);
+    card.style.setProperty('--body-shift-x', `${bodyShiftX.toFixed(2)}px`);
+    card.style.setProperty('--body-shift-y', `${bodyShiftY.toFixed(2)}px`);
+  }
+
+  function resetCardMotion(card) {
+    card.style.setProperty('--tilt-x', '0deg');
+    card.style.setProperty('--tilt-y', '0deg');
+    card.style.setProperty('--pointer-x', '50%');
+    card.style.setProperty('--pointer-y', '16%');
+    card.style.setProperty('--body-shift-x', '0px');
+    card.style.setProperty('--body-shift-y', '0px');
+  }
+
+  function attachCardMotion(card) {
+    resetCardMotion(card);
+
+    card.addEventListener('mouseenter', function () {
+      card.classList.add('is-hovered');
+    });
+
+    card.addEventListener('mousemove', function (event) {
+      card.classList.add('is-hovered');
+      setCardMotion(card, event);
+    });
+
+    card.addEventListener('mouseleave', function () {
+      card.classList.remove('is-hovered');
+      resetCardMotion(card);
+    });
+
+    card.addEventListener('focusin', function () {
+      card.classList.add('is-hovered');
+      resetCardMotion(card);
+    });
+
+    card.addEventListener('focusout', function () {
+      card.classList.remove('is-hovered');
+      resetCardMotion(card);
+    });
   }
 
   function renderCards() {

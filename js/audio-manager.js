@@ -17,7 +17,7 @@
     name: {
       playlistKey: 'name_shared',
       mountMode: 'fixedTopLeft',
-      showUnlockOverlay: true
+      showUnlockOverlay: false
     },
     character: {
       playlistKey: 'name_shared',

@@ -5,6 +5,7 @@ window.LightShadowCharacterData = [
     englishName: 'Mage',
     role: '控場 / 封鎖 / 節奏限制',
     image: 'assets/characters/mage.png',
+    fullBodyImage: 'assets/characters/fullbody/mage_full.png',
     passive: {
       name: '殘影禁制',
       summary: '離場位置留下殘影格，限制對手主動技節奏。',
@@ -28,6 +29,7 @@ window.LightShadowCharacterData = [
     englishName: 'Knight',
     role: '穩定推進 / 保持盤面壓力',
     image: 'assets/characters/knight.png',
+    fullBodyImage: 'assets/characters/fullbody/knight_full.png',
     passive: {
       name: '堅守陣線',
       summary: '第 4 顆棋落下時，保留最舊棋一次維持盤面。',
@@ -51,6 +53,7 @@ window.LightShadowCharacterData = [
     englishName: 'Assassin',
     role: '擾亂節奏 / 打斷布局',
     image: 'assets/characters/assassin.png',
+    fullBodyImage: 'assets/characters/fullbody/assassin_full.png',
     passive: {
       name: '弱點標記',
       summary: '讓敵方最舊棋進入脆弱，暫時無法參與連線。',

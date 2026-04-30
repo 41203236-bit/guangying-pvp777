@@ -28,6 +28,7 @@
     myPassiveDetail: document.getElementById('my-passive-detail'),
     myActiveName: document.getElementById('my-active-name'),
     myActiveDetail: document.getElementById('my-active-detail'),
+    playerPanel: document.querySelector('.player-panel'),
 
     enemyCampPill: document.getElementById('enemy-camp-pill'),
     enemyCharacterName: document.getElementById('enemy-character-name'),
@@ -37,6 +38,7 @@
     enemyActiveName: document.getElementById('enemy-active-name'),
     enemyActiveDetail: document.getElementById('enemy-active-detail'),
     enemyPortraitShell: document.querySelector('.enemy-panel .portrait-shell'),
+    enemyPanel: document.querySelector('.enemy-panel'),
 
     currentPlayerName: document.getElementById('current-player-name'),
     roomCode: document.getElementById('room-code'),
@@ -189,11 +191,18 @@
     };
   }
 
+
+  function applyPanelCamp(panelEl, camp) {
+    if (!panelEl) return;
+    panelEl.setAttribute('data-camp', camp || 'none');
+  }
+
   function fillMyPanel() {
     const basic = state.basic;
     const mark = state.myMark || '--';
     els.myCampMarkPill.textContent = `我的陣營：${campLabel(basic.playerCamp)} / ${mark}`;
     els.currentPlayerName.textContent = `玩家名稱：${basic.playerName}`;
+    applyPanelCamp(els.playerPanel, basic.playerCamp || 'none');
 
     if (!basic.character) {
       els.myCharacterName.textContent = '尚未同步角色';
@@ -211,6 +220,7 @@
   }
 
   function fillEnemyPlaceholder() {
+    applyPanelCamp(els.enemyPanel, 'none');
     els.enemyCampPill.textContent = '對手陣營：未顯示';
     els.enemyCharacterName.textContent = '尚未同步角色';
     els.enemyCharacterRole.textContent = '對手尚未加入或尚未完成選角。';
@@ -231,6 +241,7 @@
     }
 
     const character = getCharacter(enemyPlayer.role);
+    applyPanelCamp(els.enemyPanel, enemyPlayer.faction || 'none');
     els.enemyCampPill.textContent = `對手陣營：${campLabel(enemyPlayer.faction)} / ${state.myMark === 'O' ? 'X' : 'O'}`;
     els.enemyCharacterName.textContent = character ? `${character.name}・${character.englishName}` : '尚未同步角色';
     els.enemyCharacterRole.textContent = character ? character.role : '對手角色資料異常';

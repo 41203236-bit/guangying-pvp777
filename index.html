@@ -6,9 +6,41 @@
   <title>光影對決｜輸入玩家名稱</title>
   <link rel="stylesheet" href="css/name.css">
 </head>
-<body>
-  <main class="page-shell">
+<body class="name-page intro-pending">
+  <div class="intro-overlay" id="intro-overlay" aria-hidden="false">
+    <div class="intro-starfield" aria-hidden="true">
+      <span class="star star-1"></span>
+      <span class="star star-2"></span>
+      <span class="star star-3"></span>
+      <span class="star star-4"></span>
+      <span class="star star-5"></span>
+      <span class="star star-6"></span>
+      <span class="star star-7"></span>
+      <span class="star star-8"></span>
+      <span class="meteor meteor-1"></span>
+      <span class="meteor meteor-2"></span>
+      <span class="meteor meteor-3"></span>
+    </div>
+    <div class="intro-grid" aria-hidden="true"></div>
+    <div class="intro-energy intro-energy-left" aria-hidden="true"></div>
+    <div class="intro-energy intro-energy-right" aria-hidden="true"></div>
+    <button type="button" class="intro-start-button" id="intro-start-button" aria-label="點擊開始進入光影對決">
+      <span class="intro-start-main">點擊空白處開始</span>
+      <span class="intro-start-sub">進入光影對決遊戲</span>
+    </button>
+    <div class="intro-cinematic" id="intro-cinematic">
+      <div class="intro-blackout"></div>
+      <div class="intro-light-sweep"></div>
+      <div class="intro-title-wrap">
+        <div class="intro-title-glow"></div>
+        <h1 class="intro-title" id="intro-title">光影對決</h1>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-shell page-shell-hidden" id="page-shell">
     <section class="hero-panel" aria-label="遊戲標題區">
+      <div class="hero-tech-rings" aria-hidden="true"></div>
       <div class="hero-badge">LIGHT × SHADOW</div>
       <h1 class="game-title">光影對決</h1>
       <p class="hero-subtitle">輸入你的名字，準備進入光影對決。</p>
@@ -16,6 +48,9 @@
 
     <section class="form-panel" aria-labelledby="name-form-title">
       <div class="panel-card">
+        <div class="panel-hud panel-hud-top" aria-hidden="true"></div>
+        <div class="panel-hud panel-hud-bottom" aria-hidden="true"></div>
+        <div class="panel-scanline" aria-hidden="true"></div>
         <h2 id="name-form-title">輸入玩家名稱</h2>
         <p class="panel-description">請先設定玩家名稱。</p>
 

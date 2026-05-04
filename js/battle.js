@@ -903,18 +903,13 @@
       const gainedSp = Math.max(0, afterSp - beforeSp);
       turnPlayerData.sp = afterSp;
       if (gainedSp > 0) {
+        const nextTurnNumber = normalizeNumber(current.turn?.turnNumber, 1) + 1;
         const turnStartSpEvent = createFeedbackEvent(nextPlayer, 'sp', gainedSp);
-        if (current.feedback && Array.isArray(current.feedback.events)) {
-          current.feedback.events.push(turnStartSpEvent);
-          current.feedback.id = `feedback-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-          current.feedback.expiresAt = Date.now() + 2200;
-        } else {
-          current.feedback = {
-            id: `feedback-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-            events: [turnStartSpEvent],
-            expiresAt: Date.now() + 2200
-          };
-        }
+        current.feedback = {
+          id: `turn-start-sp-${nextPlayer}-${nextTurnNumber}`,
+          events: [turnStartSpEvent],
+          expiresAt: Date.now() + 2200
+        };
       }
     }
     playerState.ownTurnStarts = normalizeNumber(playerState.ownTurnStarts, 0) + 1;

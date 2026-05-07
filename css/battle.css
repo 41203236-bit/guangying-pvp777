@@ -2173,3 +2173,57 @@ body.has-battle-bg .round-pill {
     animation: none !important;
   }
 }
+
+/* ===== Battle status/info strip scroll fix =====
+   固定戰鬥頁左右狀態提示區高度，內容過長時只在提示區內部滾動，
+   避免角色狀態文字撐高卡片，造成棋盤與左右資訊欄不對稱。 */
+.info-strip-left,
+.info-strip-right {
+  height: 122px;
+  max-height: 122px;
+  min-height: 122px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 221, 122, 0.55) rgba(255, 255, 255, 0.06);
+}
+
+.info-strip-left .info-copy,
+.info-strip-right .info-copy {
+  display: block;
+  max-height: none;
+  padding-right: 4px;
+}
+
+.info-strip-left::-webkit-scrollbar,
+.info-strip-right::-webkit-scrollbar {
+  width: 6px;
+}
+
+.info-strip-left::-webkit-scrollbar-track,
+.info-strip-right::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.055);
+  border-radius: 999px;
+}
+
+.info-strip-left::-webkit-scrollbar-thumb,
+.info-strip-right::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(255, 221, 122, 0.72), rgba(145, 113, 255, 0.55));
+  border-radius: 999px;
+}
+
+@media (max-width: 1500px) {
+  .info-strip-left,
+  .info-strip-right {
+    height: 108px;
+    max-height: 108px;
+    min-height: 108px;
+  }
+
+  .info-strip-left .info-copy,
+  .info-strip-right .info-copy {
+    font-size: 16px;
+    line-height: 1.45;
+  }
+}
+
